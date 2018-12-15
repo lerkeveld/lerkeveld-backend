@@ -16,7 +16,7 @@ virtualenv --python=python3 env
 touch secret.py
 ```
 
-Add following **development** configuration options to *secret.py*:
+Add following **development** configuration options to secret.py:
 (Optionally, add your own email account, see https://stackoverflow.com/questions/37058567/configure-flask-mail-to-use-gmail)
 
 ```python
@@ -32,7 +32,7 @@ CORS_ORIGINS = ['http://localhost:3000']
 # flask_mail (optional)
 ```
 
-Add a user to the database using a python terminal (`bash cd lerkeveld-backend; env/bin/python`):
+Add a user to the database using a python terminal (from the repository root execute `env/bin/python`):
 ```python
 from app import db
 from app.models import User
