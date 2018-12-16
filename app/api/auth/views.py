@@ -29,13 +29,14 @@ class LoginResource(Resource):
 
             access_token = jwt.create_access_token(identity=user.id)
             refresh_token = jwt.create_refresh_token(identity=user.id)
-            resp = jsonify({
+            response = jsonify({
                 'success': True,
-                'x-csrf-token': jwt.get_csrf_token(access_token)
+                'a-csrf-token': jwt.get_csrf_token(access_token),
+                'r-csrf-token': jwt.get_csrf_token(refresh_token)
             })
-            jwt.set_access_cookies(resp, access_token)
-            jwt.set_refresh_cookies(resp, refresh_token)
-            return resp
+            jwt.set_access_cookies(response, access_token)
+            jwt.set_refresh_cookies(response, refresh_token)
+            return response
 
         return {'msg': 'Fout e-mailadres of wachtwoord'}, 401
 
@@ -44,9 +45,9 @@ class LoginResource(Resource):
 class LogoutResource(Resource):
 
     def post(self):
-        resp = jsonify({'success': True})
-        jwt.unset_jwt_cookies(resp)
-        return resp
+        response = jsonify({'success': True})
+        jwt.unset_jwt_cookies(response)
+        return response
 
 
 @api.resource('/auth/refresh')
@@ -56,9 +57,9 @@ class RefreshResource(Resource):
     def post(self):
         user = jwt.get_jwt_identity()
         access_token = jwt.create_access_token(identity=user)
-        resp = jsonify({
+        response = jsonify({
             'success': True,
-            'x-csrf-token': jwt.get_csrf_token(access_token)
+            'a-csrf-token': jwt.get_csrf_token(access_token),
             })
-        jwt.set_access_cookies(resp, access_token)
-        return resp
+        jwt.set_access_cookies(response, access_token)
+        return response
