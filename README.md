@@ -17,8 +17,6 @@ touch secret.py
 ```
 
 Add following **development** configuration options to secret.py:
-(Optionally, add your own email account, see https://stackoverflow.com/questions/37058567/configure-flask-mail-to-use-gmail)
-
 ```python
 # flask
 SECRET_KEY = 'secret'
@@ -28,9 +26,14 @@ JWT_SECRET_KEY = 'secret'
 
 # flask_cors
 CORS_ORIGINS = ['http://localhost:3000']
+CORS_SUPPORTS_CREDENTIALS = True
 
 # flask_mail (optional)
 ```
+Some optional configuration changes:
+- Add your private IP address to `CORS_ORIGINS` to allow devices on your LAN to connect via the development version of the Lerkeveld Underground application.
+- Add an email account (see https://stackoverflow.com/questions/37058567/configure-flask-mail-to-use-gmail)
+
 
 Add a user to the database using a python terminal (from the repository root execute `env/bin/python`):
 ```python
