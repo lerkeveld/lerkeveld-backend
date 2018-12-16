@@ -28,8 +28,7 @@ def send_email(subject, recipients, text_body, html_body, sender=None):
 
 def send_activation(user):
     """
-    Send an email to activate the account to the user which includes a secret
-    url to confirm the users email.
+    Send an email to the user to activate his account.
     """
     token = dump_token(user.email, salt='token-activate')
     secret_url = url_for(
@@ -44,6 +43,27 @@ def send_activation(user):
     send_email(
         'Lerkeveld Underground - Activeer Account',
         recipients=[user.email],
+        text_body=text_body,
+        html_body=html_body
+    )
+
+def send_reset(user):
+    """
+    Send an email to the user to reset his password.
+    """
+    token = dump_token(user.email, salt='token-reset')
+    secret_url = url_for(
+        'token.reset', token=token, _external=True
+    )
+    text_body = render_template(
+        'emails/reset.txt', user=user, secret_url=secret_url
+    )
+    html_body = render_template(
+        'emails/reset.html', user=user, secret_url=secret_url
+    )
+    send_email(
+        'Lerkeveld Underground - Reset Wachtwoord',
+        [user.email],
         text_body=text_body,
         html_body=html_body
     )

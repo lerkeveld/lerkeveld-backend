@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Token | Lerkeveld</title>
+</head>
+<body>
+<h3>
+    Reset je wachtwoord:
+</h3>
+<form action="{{ url_for('token.reset', token=token) }}" method="POST">
+    <label for="password">Nieuw Wachtwoord:</label>
+    <input id="password" name="password" type="password" minlength="8"/>
+    <br>
+    <br>
+    <input type="submit" value="Submit">
+</form>
+</body>
+</html>

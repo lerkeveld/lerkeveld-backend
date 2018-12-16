@@ -1,10 +1,11 @@
-Dag {{ user.first_name }}
+Dag Simon
 
-Klik op onderstaande link om je account te activeren op Lerkeveld
-Underground. Als je deze aanvraag niet zelf hebt gedaan, mag je deze email
-negeren.
+Jij (of iemand anders die zich voordoet als jou) heeft een aanvraag
+ingediend om je account op Lerkeveld Underground te activeren. Als je dit
+zelf hebt aangevraagd, gebruik dan onderstaande link om je account te
+activeren. Anders mag je deze email negeren.
 
-{{ secret_url }}
+http://secret.txt
 
 Groetjes
 Lerkeveld IT

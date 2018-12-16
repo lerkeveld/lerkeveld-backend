@@ -1,0 +1,11 @@
+Dag {{ user.first_name }}
+
+Jij (of iemand anders die zich voordoet als jou) heeft een aanvraag
+ingediend om je wachtwoord op Lerkeveld Underground te resetten. Als je dit
+zelf hebt aangevraagd, gebruik dan onderstaande link om je paswoord te
+resetten. Anders mag je deze email negeren.
+
+{{ secret_url }}
+
+Groetjes
+Lerkeveld IT

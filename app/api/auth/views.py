@@ -6,10 +6,11 @@ from app import db
 from app import emails
 from app.api import api
 from app.models import User
-from .schema import LoginSchema, ActivateSchema
+from .schema import LoginSchema, ActivateSchema, ResetSchema
 
 login_schema = LoginSchema()
 activate_schema = ActivateSchema()
+reset_schema = ResetSchema()
 
 
 @api.resource('/auth/login')
@@ -81,11 +82,30 @@ class ActivateResource(Resource):
         if not user:
             return {'msg': 'E-mailadres is niet gelinkt aan een account'}, 403
         if user.is_activated:
-            return {'msg': 'E-mailadres is reeds geactiveerd'}, 403
+            return {'msg': 'Account is reeds geactiveerd'}, 403
 
         user.set_password(data.get('password'))
         db.session.add(user)
         db.session.commit()
 
         emails.send_activation(user)
+        return {'success': True}, 200
+
+
+@api.resource('/auth/reset')
+class ResetResource(Resource):
+
+    def post(self):
+        json_data = request.get_json()
+        data, errors = reset_schema.load(json_data)
+        if not data or errors:
+            return {'msg': '400 Bad Request', 'errors': errors}, 400
+
+        user = User.get_by_email(data.get('email'))
+        if not user:
+            return {'msg': 'E-mailadres is niet gelinkt aan een account'}, 403
+        if not user.is_activated:
+            return {'msg': 'Activeer je account'}, 403
+
+        emails.send_reset(user)
         return {'success': True}, 200
