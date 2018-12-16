@@ -51,7 +51,6 @@ def reset(token):
 
     if request.method == 'POST':
         request_data = request.form
-        print(request.form)
         data, errors = reset_schema.load(request_data)
         if data and not errors:
             user.set_password(data.get('password'))
