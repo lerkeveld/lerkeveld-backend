@@ -1,0 +1,10 @@
+Dag {{ user.first_name }}
+
+Klik op onderstaande link om je account te activeren op Lerkeveld
+Underground. Als je deze aanvraag niet zelf hebt gedaan, mag je deze email
+negeren.
+
+{{ secret_url }}
+
+Groetjes
+Lerkeveld IT

@@ -2,11 +2,14 @@ import flask_jwt_extended as jwt
 from flask import request, jsonify
 from flask_restful import Resource
 
+from app import db
+from app import emails
 from app.api import api
 from app.models import User
-from .schema import LoginSchema
+from .schema import LoginSchema, ActivateSchema
 
 login_schema = LoginSchema()
+activate_schema = ActivateSchema()
 
 
 @api.resource('/auth/login')
@@ -63,3 +66,26 @@ class RefreshResource(Resource):
             })
         jwt.set_access_cookies(response, access_token)
         return response
+
+
+@api.resource('/auth/activate')
+class ActivateResource(Resource):
+
+    def post(self):
+        json_data = request.get_json()
+        data, errors = activate_schema.load(json_data)
+        if not data or errors:
+            return {'msg': '400 Bad Request', 'errors': errors}, 400
+
+        user = User.get_by_email(data.get('email'))
+        if not user:
+            return {'msg': 'E-mailadres is niet gelinkt aan een account'}, 403
+        if user.is_activated:
+            return {'msg': 'E-mailadres is reeds geactiveerd'}, 403
+
+        user.set_password(data.get('password'))
+        db.session.add(user)
+        db.session.commit()
+
+        emails.send_activation(user)
+        return {'success': True}, 200
