@@ -33,6 +33,7 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
     is_activated = db.Column(db.Boolean, nullable=False, default=False)
     is_sharing = db.Column(db.Boolean, nullable=False, default=False)
+    is_member = db.Column(db.Boolean, default=None)
 
     # Secret user info
     password_hash = db.Column(db.String(128), nullable=False)
