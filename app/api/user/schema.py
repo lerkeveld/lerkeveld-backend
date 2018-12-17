@@ -1,4 +1,5 @@
 from marshmallow import fields
+from marshmallow.validate import Length
 
 from app import ma
 
@@ -12,3 +13,13 @@ class UserSchema(ma.Schema):
     room = fields.Integer()
     is_sharing = fields.Boolean()
     is_member = fields.Boolean()
+
+
+class EditSchema(ma.Schema):
+    is_sharing = fields.Boolean()
+
+
+class EditSecureSchema(ma.Schema):
+    check = fields.String(required=True)
+    email = fields.Email()
+    password = fields.String(validate=Length(8))

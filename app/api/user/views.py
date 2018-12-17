@@ -1,10 +1,14 @@
+from flask import request
 import flask_jwt_extended as jwt
 from flask_restful import Resource
 
+from app import db
 from app.api import api
-from .schema import UserSchema
+from .schema import UserSchema, EditSchema, EditSecureSchema
 
 user_schema = UserSchema()
+edit_schema = EditSchema()
+edit_secure_schema = EditSecureSchema()
 
 
 @api.resource('/user/profile')
@@ -15,3 +19,49 @@ class UserResource(Resource):
         user = jwt.current_user
         data, _ = user_schema.dump(user)
         return {'success': True, 'user': data}
+
+
+@api.resource('/user/edit')
+class UserEditResource(Resource):
+
+    @jwt.jwt_required
+    def post(self):
+        json_data = request.get_json()
+        data, errors = edit_schema.load(json_data)
+        if not data or errors:
+            return {'msg': '400 Bad Request', 'errors': errors}, 400
+
+        is_sharing = data.get('is_sharing')
+
+        user = jwt.current_user
+        if is_sharing is not None: user.is_sharing = is_sharing
+
+        db.session.add(user)
+        db.session.commit()
+        return {'success': True}
+
+
+@api.resource('/user/edit/secure')
+class UserEditSecureResource(Resource):
+
+    @jwt.jwt_required
+    def post(self):
+        json_data = request.get_json()
+        data, errors = edit_secure_schema.load(json_data)
+        if not data or errors:
+            return {'msg': '400 Bad Request', 'errors': errors}, 400
+
+        check = data.get('check')
+        email = data.get('email')
+        password = data.get('password')
+
+        user = jwt.current_user
+        if not user.check_password(check):
+            return {'msg': 'Huidig wachtwoord incorrect'}, 400
+
+        if email is not None: user.set_email(email)
+        if password is not None: user.set_password(password)
+
+        db.session.add(user)
+        db.session.commit()
+        return {'success': True}
