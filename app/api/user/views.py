@@ -1,14 +1,16 @@
-from flask import request
 import flask_jwt_extended as jwt
+from flask import request
 from flask_restful import Resource
 
 from app import db
 from app.api import api
-from .schema import UserSchema, EditSchema, EditSecureSchema
+from app.models import User
+from .schema import UserSchema, EditSchema, EditSecureSchema, PublicUserSchema
 
 user_schema = UserSchema()
 edit_schema = EditSchema()
 edit_secure_schema = EditSecureSchema()
+public_users_schema = PublicUserSchema(many=True)
 
 
 @api.resource('/user/profile')
@@ -65,3 +67,13 @@ class UserEditSecureResource(Resource):
         db.session.add(user)
         db.session.commit()
         return {'success': True}
+
+
+@api.resource('/user/all')
+class UsersResource(Resource):
+
+    @jwt.jwt_required
+    def get(self):
+        users = User.query.all()
+        data, _ = public_users_schema.dump(users)
+        return {'success': True, 'users': data}
