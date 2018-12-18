@@ -47,6 +47,7 @@ def send_activation(user):
         html_body=html_body
     )
 
+
 def send_reset(user):
     """
     Send an email to the user to reset his password.
@@ -64,6 +65,43 @@ def send_reset(user):
     send_email(
         'Lerkeveld Underground - Reset Wachtwoord',
         [user.email],
+        text_body=text_body,
+        html_body=html_body
+    )
+
+
+def send_kotbar_reservation(reservation):
+    """
+    Sends an email to notify the user of a successful reservation of the kotbar.
+    """
+    text_body = render_template(
+        'emails/kotbar_reservation.txt', reservation=reservation
+    )
+    html_body = render_template(
+        'emails/kotbar_reservation.html', reservation=reservation
+    )
+    send_email(
+        'Lerkeveld Underground - Bevestiging Reservatie',
+        [reservation.user.email],
+        text_body=text_body,
+        html_body=html_body
+    )
+
+
+def send_kotbar_reservation_admin(reservation):
+    """
+    Sends an email to notify the kotbar mailinglist of a new successful
+    reservation.
+    """
+    text_body = render_template(
+        'emails/kotbar_reservation_admin.txt', reservation=reservation
+    )
+    html_body = render_template(
+        'emails/kotbar_reservation_admin.html', reservation=reservation
+    )
+    send_email(
+        'Lerkeveld Underground - Reservatie Kotbar',
+        app.config.get('MAIL_KOTBAR_ADMIN', []),
         text_body=text_body,
         html_body=html_body
     )

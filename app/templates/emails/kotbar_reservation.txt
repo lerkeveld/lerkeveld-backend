@@ -1,0 +1,15 @@
+Dag {{ reservation.user.first_name }},
+
+Deze email bevestigt dat je de Lerkeveld kotbar hebt gereserveerd. Mocht je
+ze gemist hebben, vind je in bijlage de 'Kotbar Rules', enkele regels bij
+het gebruiken van de kotbar. Hieronder volgt een samenvatting van je
+reservatie:
+
+Naam verantwoordelijke: {{ reservation.user.fullname }}
+E-mailadres verantwoordelijke: {{ reservation.user.email }}
+GSM verantwoordelijke: {{ reservation.user.phone }}
+Datum activiteit: {{ reservation.date }}
+Beschrijving activiteit: {{ reservation.description }}
+
+Groetjes,
+Lerkeveld IT

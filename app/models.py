@@ -38,7 +38,7 @@ class User(db.Model):
     # Secret user info
     password_hash = db.Column(db.String(128), nullable=False)
 
-    groups = db.relationship("Group", secondary=association_user_group)
+    groups = db.relationship('Group', secondary=association_user_group)
 
     def __init__(self, password=None, email=None, *args, **kwargs):
         super(User, self).__init__(*args, **kwargs)
@@ -51,11 +51,11 @@ class User(db.Model):
         return f'<User {self.first_name} {self.last_name}>'
 
     @property
-    def is_active(self):
+    def fullname(self):
         """
-        Returns whether this user is allowed access as an authorized user.
+        Returns the full name of this user.
         """
-        return self.is_activated
+        return f'{self.first_name} {self.last_name}'
 
     def set_password(self, password):
         """
@@ -132,3 +132,49 @@ class Group(db.Model):
 
     def __repr__(self):
         return f'<Group {self.name}>'
+
+
+class KotbarReservation(db.Model):
+
+    """
+    Represents a database model of a reservation of the kotbar.
+    """
+
+    __tablename__ = 'kotbar_reservation'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    date = db.Column(db.Date, nullable=False)
+    description = db.Column(db.String, nullable=False)
+
+    user = db.relationship('User')
+
+    @classmethod
+    def get_all_between(cls, start_date, end_date):
+        """
+        Returns all kotbar reservations between the given start date and end
+        date.
+        """
+        return cls.query.filter(
+            cls.date.between(start_date, end_date)
+        ).order_by(sql.desc(cls.date)).all()
+
+    @classmethod
+    def get_all_after(cls, start_date):
+        """
+        Returns all kotbar reservations after the given start date.
+        """
+        return cls.query.filter(
+            cls.date > start_date
+        ).order_by(sql.desc(cls.date)).all()
+
+    @classmethod
+    def is_booked(cls, date):
+        """
+        Returns whether a reservation at the given date has been made.
+        """
+        return db.session.query(
+            sql.exists()
+               .where(cls.date == date)
+        ).scalar()
+

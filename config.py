@@ -22,5 +22,8 @@ CORS_ORIGINS = []  # add the origin
 # flask_mail
 MAIL_DEFAULT_SENDER = ('Lerkeveld IT', '<default>')
 
+# mailinglist
+MAIL_KOTBAR_ADMIN = []
+
 # itsdangerous
 TOKEN_MAX_AGE = 2 * 24 * 60 * 60

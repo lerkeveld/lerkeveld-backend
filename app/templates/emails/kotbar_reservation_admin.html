@@ -1,0 +1,33 @@
+<div dir="ltr">
+    <div>
+        Beste,
+    </div>
+    <div><br></div>
+    <div>
+        Een gebruiker heeft de Lerkeveld kotbar gereserveerd.
+        Als iets niet in orde is in de kotbar, contacteer dan de verantwoordelijke in kwestie.
+        Hieronder volgt een samenvatting van de reservatie:
+    </div>
+    <div><br></div>
+    <div>
+        Naam verantwoordelijke: {{ reservation.user.fullname }}
+    </div>
+    <div>
+        E-mailadres verantwoordelijke: <a href="mailto:{{ reservation.user.email}}">{{ reservation.user.email }}</a></div>
+    <div>
+        GSM verantwoordelijke: {{ reservation.user.phone }}
+    </div>
+    <div>
+        Datum activiteit: {{ reservation.date }}
+    </div>
+    <div>
+        Beschrijving activiteit: {{ reservation.description }}
+    </div>
+    <div><br></div>
+    <div>
+        Met vriendelijke groeten,
+    </div>
+    <div>
+        Lerkeveld IT<br>
+    </div>
+</div>
