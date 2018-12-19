@@ -7,4 +7,5 @@ api = Api(api_blueprint)
 # Avoid circular import: views need api variable
 import app.api.auth.views
 import app.api.kotbar.views
+import app.api.materiaal.views
 import app.api.user.views

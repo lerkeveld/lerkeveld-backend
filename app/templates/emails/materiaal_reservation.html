@@ -1,0 +1,29 @@
+<div dir="ltr">
+    <div>
+        Dag {{ reservation.user.first_name }},
+    </div>
+    <div><br></div>
+    <div>
+        Deze email bevestigt dat je materiaal hebt gereserveerd.
+    </div>
+    <div>
+        Hieronder volgt een samenvatting van je reservatie:
+    </div>
+    <div><br></div>
+    <div>
+        Verantwoordelijke: {{ reservation.user.fullname }}
+    </div>
+    <div>
+        Datum: {{ reservation.date }}
+    </div>
+    <div>
+        Type materiaal: {{ reservation.items|map(attribute="name")|join(", ") }}
+    </div>
+    <div><br></div>
+    <div>
+        Groetjes,
+    </div>
+    <div>
+        Lerkeveld IT<br>
+    </div>
+</div>

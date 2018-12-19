@@ -5,9 +5,18 @@ from app.security import (
     generate_password_hash, check_password_hash, generate_random_password
 )
 
-association_user_group = db.Table('association_user_group', db.Model.metadata,
+association_user_group = db.Table(
+    'association_user_group',
+    db.Model.metadata,
     db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
     db.Column('group_id', db.Integer, db.ForeignKey('group.id'))
+)
+
+association_material_reservation_items = db.Table(
+    'association_material_type',
+    db.Model.metadata,
+    db.Column('reservation_id', db.Integer, db.ForeignKey('material_reservation.id')),
+    db.Column('type_id', db.Integer, db.ForeignKey('material_type.id'))
 )
 
 
@@ -178,3 +187,45 @@ class KotbarReservation(db.Model):
                .where(cls.date == date)
         ).scalar()
 
+
+class MaterialReservation(db.Model):
+
+    __tablename__ = 'material_reservation'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    date = db.Column(db.Date, nullable=False)
+
+    user = db.relationship('User')
+    items = db.relationship(
+        'MaterialType', secondary=association_material_reservation_items
+    )
+
+    def __repr__(self):
+        return '<MaterialReservation by {} on {}>'.format(
+            self.user.fullname, self.date
+        )
+
+    @classmethod
+    def get_all_after(cls, start_date):
+        """
+        Returns all material reservations after the given start date.
+        """
+        return cls.query.filter(
+            cls.date > start_date
+        ).order_by(sql.desc(cls.date)).all()
+
+
+class MaterialType(db.Model):
+
+    __tablename__ = 'material_type'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+
+    def __repr__(self):
+        return '<MaterialType {}>'.format(self.name)
+
+    @classmethod
+    def from_name(cls, name):
+        return cls.query.filter_by(name=name).first()

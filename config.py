@@ -24,6 +24,7 @@ MAIL_DEFAULT_SENDER = ('Lerkeveld IT', '<default>')
 
 # mailinglist
 MAIL_KOTBAR_ADMIN = []
+MAIL_MATERIAAL_ADMIN = []
 
 # itsdangerous
 TOKEN_MAX_AGE = 2 * 24 * 60 * 60

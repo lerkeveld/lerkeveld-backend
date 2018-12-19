@@ -1,0 +1,11 @@
+Beste,
+
+Een gebruiker heeft materiaal gereserveerd.
+Hieronder volgt een samenvatting van de reservatie:
+
+Verantwoordelijke: {{ reservation.user.fullname }}
+Datum: {{ reservation.date }}
+Type materiaal: {{ reservation.items|map(attribute="name")|join(", ") }}
+
+Met vriendelijke groeten,
+Lerkeveld IT
