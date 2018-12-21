@@ -4,6 +4,9 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # flask
 SECRET_KEY = '<default>'
 
+# https://github.com/vimalloc/flask-jwt-extended/issues/86
+PROPAGATE_EXCEPTIONS = True
+
 # flask_sqlalchemy
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
 SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -28,3 +31,4 @@ MAIL_MATERIAAL_ADMIN = []
 
 # itsdangerous
 TOKEN_MAX_AGE = 2 * 24 * 60 * 60
+
