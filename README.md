@@ -224,7 +224,7 @@ if __name__ == '__main__':
 - Change `site_dir` to the absolute path of the `lerkeveld-backend` directory.
 
 3. Add following lines to the .htaccess file at the webroot:
-```.htaccess
+```apache
 Options +ExecCGI
 AddHandler fcgid-script .fcgi
 
