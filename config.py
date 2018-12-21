@@ -1,4 +1,5 @@
 import os
+import datetime
 
 # flask
 SECRET_KEY = os.urandom(64)
@@ -17,8 +18,8 @@ JWT_COOKIE_CSRF_PROTECT = True
 JWT_CSRF_IN_COOKIES = False
 JWT_ACCESS_COOKIE_PATH = '/'
 JWT_REFRESH_COOKIE_PATH = '/api/auth/refresh'
-JWT_ACCESS_TOKEN_EXPIRES = 30 * 24 * 60 * 60
-JWT_REFRESH_TOKEN_EXPIRES = 30 * 24 * 60 * 60
+JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(30)
+JWT_REFRESH_TOKEN_EXPIRES = datetime.timedelta(30)
 
 # flask_cors
 CORS_ORIGINS = []
