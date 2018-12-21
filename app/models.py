@@ -57,14 +57,14 @@ class User(db.Model):
         self.set_email(email)
 
     def __repr__(self):
-        return f'<User {self.first_name} {self.last_name}>'
+        return '<User {}>'.format(self.fullname)
 
     @property
     def fullname(self):
         """
         Returns the full name of this user.
         """
-        return f'{self.first_name} {self.last_name}'
+        return '{} {}'.format(self.first_name, self.last_name)
 
     def set_password(self, password):
         """
@@ -140,7 +140,7 @@ class Group(db.Model):
     name = db.Column(db.String, nullable=False, unique=True)
 
     def __repr__(self):
-        return f'<Group {self.name}>'
+        return '<Group {}>'.format(self.name)
 
 
 class KotbarReservation(db.Model):

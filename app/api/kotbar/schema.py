@@ -10,7 +10,9 @@ def validate_date(date):
     max_date = min_date + datetime.timedelta(101)
     if not (min_date <= date <= max_date):
         raise ValidationError(
-            f'Date should be between (and including) {min_date} and {max_date}.'
+            'Date should be between (and including) {} and {}.'.format(
+                min_date, max_date
+            )
         )
     if KotbarReservation.is_booked(date):
         raise ValidationError('Date is already booked.')

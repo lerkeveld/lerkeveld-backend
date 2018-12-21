@@ -1,6 +1,6 @@
+import os
+
 import argon2
-import secrets
-import string
 from itsdangerous import URLSafeTimedSerializer
 
 from app import app
@@ -10,9 +10,7 @@ def generate_random_password(N):
     """
     Generates a random password of given length.
     """
-    return ''.join(
-        secrets.choice(string.ascii_letters + string.digits) for _ in range(N)
-    )
+    return os.urandom(N)
 
 
 def generate_password_hash(password):
