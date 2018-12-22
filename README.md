@@ -132,7 +132,20 @@ MAIL_MATERIAAL_ADMIN = []
 ### Setup the database
 
 #### PostgreSQL setup (recommended)
-TODO
+1. General methodology:
+    1. Install postgresql
+    2. Add a new user
+    3. Change password for user
+    4. Add a new database
+    5. Grant access from user to database on local connection (`pg_hba.conf`)
+
+2. Change `SQLALCHEMY_DATABASE_URI` in `config.py` to `'postgresql://user:password@localhost/database'`.
+
+3. Create the database (execute following script from a python shell):
+```python
+from app import db
+db.create_all()
+```
 
 #### SQLite setup (not recommended)
 Installation instructions (**requires root priviliges**):
