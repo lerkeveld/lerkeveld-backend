@@ -1,12 +1,10 @@
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <title>Token | Lerkeveld</title>
-</head>
-<body>
-<p>
-    Uw opgegeven token was niet correct, contacteer Lerkeveld IT: <a href="mailto:it@lerkies.studentenweb.org">it@lerkies.studentenweb.org</a>.
-</p>
-</body>
-</html>
+{% extends "token/_base.html" %}
+{% block main %}
+<div class="w3-panel w3-pale-red w3-round-large">
+  <p>
+    De <span class="bold">token is incorrect</span>.
+    Probeer eerst om de token <span class="bold">opnieuw</span> op te vragen.
+    Als dat niet helpt, <span class="bold">contacteer</span> dan <span class="bold">Lerkeveld IT</span>.
+  </p>
+</div>
+{% endblock main %}

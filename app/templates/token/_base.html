@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <title>Token | Lerkeveld</title>
+
+    <meta name="author" content="Lerkeveld IT">
+    <meta name="description" content="Parvus Numero, Magnus Merito!">
+    <meta name="keywords" content="Lerkeveld,Praesidium,Token">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#ffffff">
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500">
+
+    <!-- https://realfavicongenerator.net -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+    <link rel="manifest" href="/assets/site.webmanifest">
+    <link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="/assets/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-config" content="/assets/browserconfig.xml">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        .bold {
+            font-weight: 500;
+        }
+        #root {
+            min-height: 100vh;
+            background-color: #9b0000;
+        }
+        #card {
+            width: 100%;
+            max-width: 350px;
+            padding: 16px 24px 16px 24px;
+            background-color: #fff;
+        }
+        #card-icon {
+            display: block;
+            margin: 0px auto 0px auto;
+            width: 100px;
+            height: 100px;
+        }
+        #card-head {
+            text-align: center;
+            margin: 0px auto 24px auto;
+        }
+        .card-submit {
+            display: block;
+            margin: 24px auto 16px auto;
+            background-color: #ffd600;
+        }
+        .card-submit:hover {
+            background-color: #c7a500 !important;
+        }
+    </style>
+</head>
+<body>
+    <div id="root" class="w3-display-container">
+      <div id="card" class="w3-display-middle w3-card-2 w3-round-large">
+        <svg id="card-icon" focusable="false" viewBox="0 0 250 250" aria-hidden="true" role="presentation">
+          <path d="m3.9166 64.206v68.381h23.549v-6.7928h48.909v43.474h-7.247v23.549h77.891v-23.55h-47.098v-49.59h88.76v72.91h50.267v-23.32h-26.95v-49.59h31.021v-24.906h-31.02v-50.72h-32.379v25.586h8.8307v25.36h-48.45v-34.417h-30.79v33.738h-33.063v7.4721h-48.908v-37.578z">
+          </path>
+        </svg>
+        <h3 id="card-head">Lerkeveld Underground</h3>
+        {% block main %}{% endblock main %}
+      </div>
+    </div>
+</body>
+</html>

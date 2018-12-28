@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <title>Token | Lerkeveld</title>
-</head>
-<body>
-<p>
-    Bedankt, je hebt je account geactiveerd! Je mag dit venster sluiten ;-)
-</p>
-</body>
-</html>
+{% extends "token/_base.html" %}
+{% block main %}
+<div class="w3-panel w3-pale-yellow w3-round-xlarge">
+  <p>
+    Je hebt je <span class="bold">account geactiveerd</span>!
+  </p>
+</div>
+{% endblock main %}

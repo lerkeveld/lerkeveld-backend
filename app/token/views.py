@@ -49,6 +49,7 @@ def reset(token):
     if not user:
         return render_template('token/failure.html')
 
+    errors = {}
     if request.method == 'POST':
         request_data = request.form
         data, errors = reset_schema.load(request_data)
@@ -57,6 +58,5 @@ def reset(token):
             db.session.add(user)
             db.session.commit()
             return render_template('token/reset_success.html')
-        return abort(400)
 
-    return render_template('token/reset.html', token=token)
+    return render_template('token/reset.html', token=token, errors=errors)

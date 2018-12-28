@@ -1,19 +1,11 @@
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <title>Token | Lerkeveld</title>
-</head>
-<body>
-<h3>
-    Reset je wachtwoord:
-</h3>
-<form action="{{ url_for('token.reset', token=token) }}" method="POST">
-    <label for="password">Nieuw Wachtwoord:</label>
-    <input id="password" name="password" type="password" minlength="8"/>
-    <br>
-    <br>
-    <input type="submit" value="Submit">
+{% extends "token/_base.html" %}
+{% block main %}
+<form action="{{ url_for('token.reset', token=token) }}" method="POST" novalidate>
+  <label for="password">Nieuw Wachtwoord</label>
+  <input name="password" class="w3-input w3-border w3-round-large" type="password" required minlength=8>
+  <label for="password" {% if 'password' in errors %}style="color:red"{% endif %}>Vul hier minimaal 8 tekens in.</label>
+  <button id="card-submit" class="w3-button w3-text-black w3-round w3-card-2 card-submit" type="submit">
+    Reset Wachtwoord
+  </button>
 </form>
-</body>
-</html>
+{% endblock main %}
