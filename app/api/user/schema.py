@@ -26,6 +26,7 @@ class EditSecureSchema(ma.Schema):
 
 
 class PublicUserSchema(ma.Schema):
+    id = fields.Integer()
     first_name = fields.String()
     last_name = fields.String()
     email = fields.Function(lambda user: user.email if user.is_sharing else None)
