@@ -28,7 +28,8 @@ SECRET_KEY = 'secret'
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
 
 # flask_jwt_extended
-JWT_SECRET_KEY = 'secret'
+JWT_SECRET_KEY = SECRET_KEY
+JWT_COOKIE_SECURE = False
 
 # flask_cors
 CORS_ORIGINS = ['http://localhost:3000']
@@ -110,7 +111,8 @@ SECRET_KEY =
 SQLALCHEMY_DATABASE_URI =
 
 # flask_jwt_extended
-JWT_SECRET_KEY =
+JWT_SECRET_KEY = SECRET_KEY
+JWT_COOKIE_SECURE = True
 
 # flask_cors
 CORS_ORIGINS = []
@@ -123,8 +125,9 @@ MAIL_KOTBAR_ADMIN = []
 MAIL_MATERIAAL_ADMIN = []
 ```
 **Critical** configuration changes:
-- Change `SECRET_KEY` and `JWT_SECRET_KEY` (the web server errors otherwise)
-- Change `SQLALCHEMY_DATABASE_URI` (see later)
+- Change `SECRET_KEY` and `JWT_SECRET_KEY` (the web server errors otherwise).
+- Change `SQLALCHEMY_DATABASE_URI` (see later).
+- Change `JWT_COOKIE_SECURE` to `False` if the API is served insecurly with HTTP.
 - Add to `CORS_ORIGINS` the domain name (with protocol, e.g. https://lerkies.simonbos.me) or IP address of the webserver hosting the frontend.
 - Add an email account (see https://stackoverflow.com/questions/37058567/configure-flask-mail-to-use-gmail) and uncomment the line with `MAIL_SUPPRESS_SEND`.
 - Add the relevant email addresses to `MAIL_KOTBAR_ADMIN` and `MAIL_MATERIAAL_ADMIN`. Note: everytime this configuration changes, the webserver has to restart. As such, it is best practice to use editable email forwarders here.
