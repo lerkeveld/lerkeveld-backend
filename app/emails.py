@@ -5,25 +5,21 @@ from app import app, mail
 from app.decorators import async
 from app.security import dump_token
 
+# load assets in memory to speedup sending emails
+with app.open_resource('assets/kotbar_rules.pdf') as f:
+    KOTBAR_RULES = f.read()
+
+with app.open_resource('assets/kotbar_plan.jpg') as f:
+    KOTBAR_PLAN = f.read()
+
 
 @async
-def send_async_email(app, msg):
+def send_async_email(msg):
     """
     Sends an email asynchronously.
     """
     with app.app_context():
         mail.send(msg)
-
-
-def send_email(subject, recipients, text_body, html_body, sender=None):
-    """
-    Convenience function to send an email with provided subject, recipients,
-    text body, html body and optionally a sender.
-    """
-    msg = Message(subject, sender=sender, recipients=recipients)
-    msg.body = text_body
-    msg.html = html_body
-    send_async_email(app, msg)
 
 
 def send_activation(user):
@@ -34,18 +30,17 @@ def send_activation(user):
     secret_url = url_for(
         'token.activate', token=token, _external=True
     )
-    text_body = render_template(
+
+    msg = Message()
+    msg.subject = 'Lerkeveld Underground - Activeer Account'
+    msg.add_recipient(user.email)
+    msg.body = render_template(
         'emails/activation.txt', user=user, secret_url=secret_url
     )
-    html_body = render_template(
+    msg.html = render_template(
         'emails/activation.html', user=user, secret_url=secret_url
     )
-    send_email(
-        'Lerkeveld Underground - Activeer Account',
-        recipients=[user.email],
-        text_body=text_body,
-        html_body=html_body
-    )
+    send_async_email(msg)
 
 
 def send_reset(user):
@@ -56,36 +51,45 @@ def send_reset(user):
     secret_url = url_for(
         'token.reset', token=token, _external=True
     )
-    text_body = render_template(
+
+    msg = Message()
+    msg.subject = 'Lerkeveld Underground - Reset Wachtwoord'
+    msg.add_recipient(user.email)
+    msg.body = render_template(
         'emails/reset.txt', user=user, secret_url=secret_url
     )
-    html_body = render_template(
+    msg.html = render_template(
         'emails/reset.html', user=user, secret_url=secret_url
     )
-    send_email(
-        'Lerkeveld Underground - Reset Wachtwoord',
-        [user.email],
-        text_body=text_body,
-        html_body=html_body
-    )
+    send_async_email(msg)
 
 
 def send_kotbar_reservation(reservation):
     """
     Sends an email to notify the user of a successful reservation of the kotbar.
     """
-    text_body = render_template(
+    msg = Message()
+    msg.subject = 'Lerkeveld Underground - Bevestiging Reservatie'
+    msg.add_recipient(reservation.user.email)
+    msg.body = render_template(
         'emails/kotbar_reservation.txt', reservation=reservation
     )
-    html_body = render_template(
+    msg.html = render_template(
         'emails/kotbar_reservation.html', reservation=reservation
     )
-    send_email(
-        'Lerkeveld Underground - Bevestiging Reservatie',
-        [reservation.user.email],
-        text_body=text_body,
-        html_body=html_body
+    msg.attach(
+        'rules.pdf',
+        'application/pdf',
+        KOTBAR_RULES,
+        'attachment; filename="rules.pdf"'
     )
+    msg.attach(
+        'plan.jpg',
+        'image/jpeg',
+        KOTBAR_PLAN,
+        'attachment; filename="plan.jpg"'
+    )
+    send_async_email(msg)
 
 
 def send_kotbar_reservation_admin(reservation):
@@ -93,36 +97,32 @@ def send_kotbar_reservation_admin(reservation):
     Sends an email to notify the kotbar mailinglist of a new successful
     reservation.
     """
-    text_body = render_template(
+    msg = Message()
+    msg.subject = 'Lerkeveld Underground - Reservatie Kotbar'
+    msg.recipients = app.config.get('MAIL_KOTBAR_ADMIN', [])
+    msg.body = render_template(
         'emails/kotbar_reservation_admin.txt', reservation=reservation
     )
-    html_body = render_template(
+    msg.html = render_template(
         'emails/kotbar_reservation_admin.html', reservation=reservation
     )
-    send_email(
-        'Lerkeveld Underground - Reservatie Kotbar',
-        app.config.get('MAIL_KOTBAR_ADMIN', []),
-        text_body=text_body,
-        html_body=html_body
-    )
+    send_async_email(msg)
 
 
 def send_materiaal_reservation(reservation):
     """
     Sends an email to notify the user of a successful reservation of material.
     """
-    text_body = render_template(
+    msg = Message()
+    msg.subject = 'Lerkeveld Underground - Bevestiging Reservatie'
+    msg.add_recipient(reservation.user.email)
+    msg.body = render_template(
         'emails/materiaal_reservation.txt', reservation=reservation
     )
-    html_body = render_template(
+    msg.html = render_template(
         'emails/materiaal_reservation.html', reservation=reservation
     )
-    send_email(
-        'Lerkeveld Underground - Bevestiging Reservatie',
-        [reservation.user.email],
-        text_body=text_body,
-        html_body=html_body
-    )
+    send_async_email(msg)
 
 
 def send_materiaal_reservation_admin(reservation):
@@ -130,15 +130,13 @@ def send_materiaal_reservation_admin(reservation):
     Sends an email to notify the material mailinglist of a new successful
     reservation.
     """
-    text_body = render_template(
+    msg = Message()
+    msg.subject = 'Lerkeveld Underground - Reservatie Materiaal'
+    msg.recipients = app.config.get('MAIL_KOTBAR_ADMIN', [])
+    msg.body = render_template(
         'emails/materiaal_reservation_admin.txt', reservation=reservation
     )
-    html_body = render_template(
+    msg.html = render_template(
         'emails/materiaal_reservation_admin.html', reservation=reservation
     )
-    send_email(
-        'Lerkeveld Underground - Reservatie Materiaal',
-        app.config.get('MAIL_MATERIAAL_ADMIN', []),
-        text_body=text_body,
-        html_body=html_body
-    )
+    send_async_email(msg)
