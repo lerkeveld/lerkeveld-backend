@@ -5,6 +5,13 @@ from app import app, mail
 from app.decorators import async
 from app.security import dump_token
 
+# load assets in memory to speedup sending emails
+with app.open_resource('assets/kotbar_rules.pdf') as f:
+    KOTBAR_RULES = f.read()
+
+with app.open_resource('assets/kotbar_plan.jpg') as f:
+    KOTBAR_PLAN = f.read()
+
 
 @async
 def send_async_email(msg):
@@ -69,6 +76,18 @@ def send_kotbar_reservation(reservation):
     )
     msg.html = render_template(
         'emails/kotbar_reservation.html', reservation=reservation
+    )
+    msg.attach(
+        'rules.pdf',
+        'application/pdf',
+        KOTBAR_RULES,
+        'attachment; filename="rules.pdf"'
+    )
+    msg.attach(
+        'plan.jpg',
+        'image/jpeg',
+        KOTBAR_PLAN,
+        'attachment; filename="plan.jpg"'
     )
     send_async_email(msg)
 
