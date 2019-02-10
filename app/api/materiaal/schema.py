@@ -28,6 +28,7 @@ class ReservationSchema(ma.Schema):
     items = fields.Function(
         lambda reservation: list(map(lambda item: item.name, reservation.items))
     )
+    own = fields.Boolean()
 
 
 class ReserveSchema(ma.Schema):

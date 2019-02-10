@@ -15,12 +15,17 @@ reserve_schema = ReserveSchema()
 
 
 @api.resource('/kotbar/')
-class KotbarResource(Resource):
+class KotbarReservationListResource(Resource):
 
     @jwt.jwt_required
     def get(self):
         yesterday = datetime.date.today() - datetime.timedelta(1)
         reservations = KotbarReservation.get_all_after(yesterday)
+
+        user = jwt.current_user
+        for reservation in reservations:
+            reservation.own = user.id == reservation.user.id
+
         data, _ = reservations_schema.dump(reservations)
         return {'success': True, 'reservations': data}
 
@@ -43,4 +48,19 @@ class KotbarResource(Resource):
 
         emails.send_kotbar_reservation(reservation)
         emails.send_kotbar_reservation_admin(reservation)
+        return {'success': True}
+
+
+@api.resource('/kotbar/<int:reservation_id>')
+class KotbarReservationResource(Resource):
+
+    @jwt.jwt_required
+    def delete(self, reservation_id):
+        user = jwt.current_user
+        reservation = KotbarReservation.query.get(reservation_id)
+        if not reservation or reservation.user.id != user.id:
+            return {'msg': '400 Bad Request'}, 400
+
+        db.session.delete(reservation)
+        db.session.commit()
         return {'success': True}

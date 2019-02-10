@@ -16,12 +16,17 @@ material_types_schema = MaterialTypeSchema(many=True)
 
 
 @api.resource('/materiaal/')
-class MaterialResource(Resource):
+class MaterialReservationListResource(Resource):
 
     @jwt.jwt_required
     def get(self):
         yesterday = datetime.date.today() - datetime.timedelta(1)
         reservations = MaterialReservation.get_all_after(yesterday)
+
+        user = jwt.current_user
+        for reservation in reservations:
+            reservation.own = user.id == reservation.user.id
+
         data, _ = reservations_schema.dump(reservations)
         return {'success': True, 'reservations': data}
 
@@ -44,6 +49,21 @@ class MaterialResource(Resource):
 
         emails.send_materiaal_reservation(reservation)
         emails.send_materiaal_reservation_admin(reservation)
+        return {'success': True}
+
+
+@api.resource('/materiaal/<int:reservation_id>')
+class MaterialReservationResource(Resource):
+
+    @jwt.jwt_required
+    def delete(self, reservation_id):
+        user = jwt.current_user
+        reservation = MaterialReservation.query.get(reservation_id)
+        if not reservation or reservation.user.id != user.id:
+            return {'msg': '400 Bad Request'}, 400
+
+        db.session.delete(reservation)
+        db.session.commit()
         return {'success': True}
 
 

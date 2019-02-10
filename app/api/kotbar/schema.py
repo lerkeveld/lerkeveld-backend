@@ -23,6 +23,7 @@ class ReservationSchema(ma.Schema):
     username = fields.Function(lambda reservation: reservation.user.fullname)
     date = fields.Date()
     description = fields.String()
+    own = fields.Boolean()
 
 
 class ReserveSchema(ma.Schema):
