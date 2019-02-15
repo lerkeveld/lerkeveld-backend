@@ -85,6 +85,7 @@ class ActivateResource(Resource):
             return {'msg': 'Account is reeds geactiveerd'}, 403
 
         user.set_password(data.get('password'))
+        user.is_sharing = data.get('isSharing')
         db.session.add(user)
         db.session.commit()
 

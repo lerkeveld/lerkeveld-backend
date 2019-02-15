@@ -12,6 +12,7 @@ class LoginSchema(ma.Schema):
 class ActivateSchema(ma.Schema):
     email = fields.String(required=True)
     password = fields.String(required=True, validate=Length(8))
+    isSharing = fields.Boolean(default=False)
 
 
 class ResetSchema(ma.Schema):
