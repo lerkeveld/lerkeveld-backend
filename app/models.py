@@ -34,9 +34,9 @@ class User(db.Model):
     first_name = db.Column(db.String(64), nullable=False)
     last_name = db.Column(db.String(64), nullable=False)
     email = db.Column(db.String(128), unique=True, nullable=False)
-    phone = db.Column(db.String(16))
-    corridor = db.Column(db.String(4))
-    room = db.Column(db.Integer)
+    phone = db.Column(db.String(16), default=None)
+    corridor = db.Column(db.String(4), default=None)
+    room = db.Column(db.Integer, default=None)
 
     # User capabilities
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
