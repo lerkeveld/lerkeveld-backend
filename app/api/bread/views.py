@@ -60,7 +60,6 @@ class BreadDateResource(Resource):
                  .filter(BreadOrder.bread_order_date == order_date)
                  .filter(BreadOrder.user == user).first())
         if order is None:
-            print(order.items)
             order = BreadOrder(bread_order_date=order_date, user=user)
 
         order.items.append(*data.get('items'))
