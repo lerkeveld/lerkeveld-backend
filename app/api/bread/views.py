@@ -6,7 +6,7 @@ from flask_restful import Resource
 
 from app import db
 from app.api import api
-from app.models import BreadOrder, BreadType
+from app.models import BreadOrder, BreadType, BreadDate
 from .schema import OrderSchema, BreadListSchema, BreadTypeSchema
 
 order_schema = OrderSchema(many=True)
@@ -26,69 +26,60 @@ class BreadOrderListResource(Resource):
             startdate = startdate.replace(month=1, day=1)
 
         user = jwt.current_user
-        orders = BreadOrder.get_all_after_user(startdate, user)
+        orderdates = BreadDate.get_all_after(startdate)
 
-        for order in orders:
-            order.date = order.bread_date.date
+        for orderdate in orderdates:
+            order = (BreadOrder.query
+                     .filter(BreadOrder.bread_date == orderdate)
+                     .filter(BreadOrder.user == user).first())
+            if order is None:
+                orderdate.items = []
+            else:
+                orderdate.items = order.items
 
-        data, _ = order_schema.dump(orders)
+        data, _ = order_schema.dump(orderdates)
         return {'success': True, 'orders': data}
 
-    @jwt.jwt_required
-    def post(self):
-        json_data = request.get_json()
-        data, errors = breadlist_schema.load(json_data)
-        if not data or errors:
-            return {'msg': '400 Bad Request', 'errors': errors}, 400
 
-        user = jwt.current_user
-
-        reservation = BreadOrder(
-            user=user,
-            date=data.get('date'),
-            items=data.get('items')
-        )
-        db.session.add(reservation)
-        db.session.commit()
-
-        return {'success': True}
-
-
-@api.resource('/bread/<int:order_id>')
+@api.resource('/bread/<int:order_date_id>')
 class BreadOrderResource(Resource):
 
     @jwt.jwt_required
-    def put(self, order_id):
+    def patch(self, order_date_id):
         json_data = request.get_json()
         data, errors = breadlist_schema.load(json_data)
         if not data or errors:
             return {'msg': '400 Bad Request', 'errors': errors}, 400
 
         user = jwt.current_user
-        order = BreadOrder.query.get(order_id)
-        if not order or not order.editable or order.user.id != user.id:
+        order_date = BreadDate.query.get(order_date_id)
+        if not order_date or not order_date.editable:
             return {'msg': '400 Bad Request'}, 400
 
-        order.items = data.get('items')
+        order = (BreadOrder.query
+                 .filter(BreadOrder.bread_date == order_date)
+                 .filter(BreadOrder.user == user).first())
+        if order is None:
+            order = BreadOrder(bread_date=order_date, user=user)
+
+        order.items.extend(data.get('items'))
         db.session.commit()
         return {'success': True}
 
     @jwt.jwt_required
-    def patch(self, order_id):
-        json_data = request.get_json()
-        data, errors = breadlist_schema.load(json_data)
-        if not data or errors:
-            return {'msg': '400 Bad Request', 'errors': errors}, 400
-
+    def delete(self, order_date_id):
         user = jwt.current_user
-        order = BreadOrder.query.get(order_id)
-        if not order or not order.editable or order.user.id != user.id:
+        order_date = BreadDate.query.get(order_date_id)
+        if not order_date or not order_date.editable:
             return {'msg': '400 Bad Request'}, 400
 
-        order.items.append(data.get('items'))
+        order = (BreadOrder.query
+                 .filter(BreadOrder.bread_date == order_date)
+                 .filter(BreadOrder.user == user).first())
+        if order is not None:
+            db.session.delete(order)
         db.session.commit()
         return {'success': True}
-
 
 @api.resource('/bread/type')
 class BreadTypeResource(Resource):

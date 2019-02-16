@@ -16,7 +16,7 @@ class OrderSchema(ma.Schema):
     id = fields.Integer()
     date = fields.Date()
     items = fields.Function(
-        lambda order: list(map(lambda item: item.name, order.items))
+        lambda user_order: list(map(lambda item: item.name, user_order.items))
     )
     active = fields.Boolean()
     editable = fields.Boolean()

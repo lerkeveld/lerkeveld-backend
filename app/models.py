@@ -285,7 +285,16 @@ class BreadDate(db.Model):
 
     @property
     def editable(self):
-        return self.date - datetime.date.today() >= datetime.timedelta(days=2)
+        return self.date - datetime.date.today() >= datetime.timedelta(days=2) and self.active
+
+    @classmethod
+    def get_all_after(cls, start_date):
+        """
+        Returns all bread orders after the given start date.
+        """
+        return (cls.query
+                .filter(cls.date > start_date)
+                .all())
 
     def __repr__(self):
         return '<BreadDate {} ({}active)>'.format(self.date, "in"*(not self.active))
