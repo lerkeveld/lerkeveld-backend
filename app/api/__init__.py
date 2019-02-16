@@ -8,4 +8,5 @@ api = Api(api_blueprint)
 import app.api.auth.views
 import app.api.kotbar.views
 import app.api.materiaal.views
+import app.api.bread.views
 import app.api.user.views

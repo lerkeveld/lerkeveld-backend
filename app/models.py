@@ -1,4 +1,6 @@
 import sqlalchemy.sql as sql
+import datetime
+from sqlalchemy.ext.associationproxy import association_proxy
 
 from app import db
 from app.security import (
@@ -24,13 +26,6 @@ association_bread_order_items = db.Table(
     db.Model.metadata,
     db.Column('order_id', db.Integer, db.ForeignKey('bread_order.id')),
     db.Column('type_id', db.Integer, db.ForeignKey('bread_type.id'))
-)
-
-association_bread_date_orders = db.Table(
-    'association_bread_date_order',
-    db.Model.metadata,
-    db.Column('date_id', db.Integer, db.ForeignKey('bread_date.id')),
-    db.Column('order_id', db.Integer, db.ForeignKey('bread_order.id'))
 )
 
 
@@ -254,7 +249,8 @@ class BreadOrder(db.Model):
     date_id = db.Column(db.Integer, db.ForeignKey('bread_date.id'))
 
     user = db.relationship('User')
-    date = db.relationship('BreadDate')
+    bread_date = db.relationship('BreadDate', back_populates="orders")
+    # date = association_proxy('bread_date', 'date')
 
     items = db.relationship(
         'BreadType', secondary=association_bread_order_items
@@ -262,17 +258,19 @@ class BreadOrder(db.Model):
 
     def __repr__(self):
         return '<BreadOrder by {} on {}>'.format(
-            self.user.fullname, self.date
+            self.user.fullname, self.bread_date.date
         )
 
     @classmethod
-    def get_all_after(cls, start_date):
+    def get_all_after_user(cls, start_date, user):
         """
-        Returns all bread orders after the given start date.
+        Returns all bread orders after the given start date for a given user.
         """
-        return cls.query.filter(
-            cls.date > start_date
-        ).order_by(sql.desc(cls.date)).all()
+        return (cls.query
+                .join(BreadDate)
+                .filter(cls.user == user)
+                .filter(BreadDate.date > start_date)
+                .all())
 
 
 class BreadDate(db.Model):
@@ -283,16 +281,14 @@ class BreadDate(db.Model):
     date = db.Column(db.Date, nullable=False)
     active = db.Column(db.Boolean, nullable=False, default=True)
 
-    orders = db.relationship(
-            'BreadOrder', secondary=association_bread_date_orders
-    )
+    orders = db.relationship('BreadOrder', back_populates="bread_date", cascade="all, delete-orphan")
+
+    @property
+    def editable(self):
+        return self.date - datetime.date.today() >= datetime.timedelta(days=2)
 
     def __repr__(self):
         return '<BreadDate {} ({}active)>'.format(self.date, "in"*(not self.active))
-
-    @classmethod
-    def from_name(cls, name):
-        return cls.query.filter_by(name=name).first()
 
 
 class BreadType(db.Model):
