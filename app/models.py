@@ -19,6 +19,20 @@ association_material_reservation_items = db.Table(
     db.Column('type_id', db.Integer, db.ForeignKey('material_type.id'))
 )
 
+association_bread_order_items = db.Table(
+    'association_bread_type',
+    db.Model.metadata,
+    db.Column('order_id', db.Integer, db.ForeignKey('bread_order.id')),
+    db.Column('type_id', db.Integer, db.ForeignKey('bread_type.id'))
+)
+
+association_bread_date_orders = db.Table(
+    'association_bread_date_order',
+    db.Model.metadata,
+    db.Column('date_id', db.Integer, db.ForeignKey('bread_date.id')),
+    db.Column('order_id', db.Integer, db.ForeignKey('bread_order.id'))
+)
+
 
 class User(db.Model):
 
@@ -225,6 +239,71 @@ class MaterialType(db.Model):
 
     def __repr__(self):
         return '<MaterialType {}>'.format(self.name)
+
+    @classmethod
+    def from_name(cls, name):
+        return cls.query.filter_by(name=name).first()
+
+
+class BreadOrder(db.Model):
+
+    __tablename__ = 'bread_order'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    date_id = db.Column(db.Integer, db.ForeignKey('bread_date.id'))
+
+    user = db.relationship('User')
+    date = db.relationship('BreadDate')
+
+    items = db.relationship(
+        'BreadType', secondary=association_bread_order_items
+    )
+
+    def __repr__(self):
+        return '<BreadOrder by {} on {}>'.format(
+            self.user.fullname, self.date
+        )
+
+    @classmethod
+    def get_all_after(cls, start_date):
+        """
+        Returns all bread orders after the given start date.
+        """
+        return cls.query.filter(
+            cls.date > start_date
+        ).order_by(sql.desc(cls.date)).all()
+
+
+class BreadDate(db.Model):
+
+    __tablename__ = 'bread_date'
+
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.Date, nullable=False)
+    active = db.Column(db.Boolean, nullable=False, default=True)
+
+    orders = db.relationship(
+            'BreadOrder', secondary=association_bread_date_orders
+    )
+
+    def __repr__(self):
+        return '<BreadDate {} ({}active)>'.format(self.date, "in"*(not self.active))
+
+    @classmethod
+    def from_name(cls, name):
+        return cls.query.filter_by(name=name).first()
+
+
+class BreadType(db.Model):
+
+    __tablename__ = 'bread_type'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+
+    def __repr__(self):
+        return '<BreadType {}>'.format(self.name)
 
     @classmethod
     def from_name(cls, name):
