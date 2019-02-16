@@ -42,7 +42,7 @@ class BreadOrderListResource(Resource):
 
 
 @api.resource('/bread/<int:order_date_id>')
-class BreadOrderResource(Resource):
+class BreadDateResource(Resource):
 
     @jwt.jwt_required
     def patch(self, order_date_id):
@@ -60,6 +60,7 @@ class BreadOrderResource(Resource):
                  .filter(BreadOrder.bread_order_date == order_date)
                  .filter(BreadOrder.user == user).first())
         if order is None:
+            print(order.items)
             order = BreadOrder(bread_order_date=order_date, user=user)
 
         order.items.append(*data.get('items'))
