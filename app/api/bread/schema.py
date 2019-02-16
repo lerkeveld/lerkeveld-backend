@@ -12,12 +12,15 @@ def validate_not_none(value):
         raise ValidationError('Items contains an unknown bread type')
 
 
+class BreadTypeSchema(ma.Schema):
+    name = fields.String()
+    price = fields.Integer()
+
+
 class OrderSchema(ma.Schema):
     id = fields.Integer()
     date = fields.Date()
-    items = fields.Function(
-        lambda user_order: list(map(lambda item: item.name, user_order.items))
-    )
+    items = fields.List(fields.Nested(BreadTypeSchema))
     is_active = fields.Boolean()
     is_editable = fields.Boolean()
 
@@ -30,7 +33,3 @@ class BreadListSchema(ma.Schema):
         ),
         required=True
     )
-
-
-class BreadTypeSchema(ma.Schema):
-    name = fields.String()
