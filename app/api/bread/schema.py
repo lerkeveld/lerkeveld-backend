@@ -9,7 +9,7 @@ def validate_not_none(value):
     Validates whether the given value is None.
     """
     if value is None:
-        raise ValidationError('Items contains an unknown material type')
+        raise ValidationError('Items contains an unknown bread type')
 
 
 class OrderSchema(ma.Schema):
@@ -18,8 +18,8 @@ class OrderSchema(ma.Schema):
     items = fields.Function(
         lambda user_order: list(map(lambda item: item.name, user_order.items))
     )
-    active = fields.Boolean()
-    editable = fields.Boolean()
+    is_active = fields.Boolean()
+    is_editable = fields.Boolean()
 
 
 class BreadListSchema(ma.Schema):

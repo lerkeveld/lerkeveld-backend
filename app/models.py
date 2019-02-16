@@ -1,6 +1,5 @@
 import sqlalchemy.sql as sql
 import datetime
-from sqlalchemy.ext.associationproxy import association_proxy
 
 from app import db
 from app.security import (
@@ -246,11 +245,10 @@ class BreadOrder(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    date_id = db.Column(db.Integer, db.ForeignKey('bread_date.id'))
+    date_id = db.Column(db.Integer, db.ForeignKey('bread_order_date.id'))
 
     user = db.relationship('User')
-    bread_date = db.relationship('BreadDate', back_populates="orders")
-    # date = association_proxy('bread_date', 'date')
+    bread_order_date = db.relationship('BreadOrderDate', back_populates="orders")
 
     items = db.relationship(
         'BreadType', secondary=association_bread_order_items
@@ -258,7 +256,7 @@ class BreadOrder(db.Model):
 
     def __repr__(self):
         return '<BreadOrder by {} on {}>'.format(
-            self.user.fullname, self.bread_date.date
+            self.user.fullname, self.bread_order_date.date
         )
 
     @classmethod
@@ -267,25 +265,25 @@ class BreadOrder(db.Model):
         Returns all bread orders after the given start date for a given user.
         """
         return (cls.query
-                .join(BreadDate)
+                .join(BreadOrderDate)
                 .filter(cls.user == user)
-                .filter(BreadDate.date > start_date)
+                .filter(BreadOrderDate.date > start_date)
                 .all())
 
 
-class BreadDate(db.Model):
+class BreadOrderDate(db.Model):
 
-    __tablename__ = 'bread_date'
+    __tablename__ = 'bread_order_date'
 
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date, nullable=False)
-    active = db.Column(db.Boolean, nullable=False, default=True)
+    is_active = db.Column(db.Boolean, nullable=False, default=True)
 
-    orders = db.relationship('BreadOrder', back_populates="bread_date", cascade="all, delete-orphan")
+    orders = db.relationship('BreadOrder', back_populates="bread_order_date") #TODO cascade
 
     @property
-    def editable(self):
-        return self.date - datetime.date.today() >= datetime.timedelta(days=2) and self.active
+    def is_editable(self):
+        return self.is_active and self.date - datetime.date.today() >= datetime.timedelta(days=2)
 
     @classmethod
     def get_all_after(cls, start_date):
@@ -297,7 +295,7 @@ class BreadDate(db.Model):
                 .all())
 
     def __repr__(self):
-        return '<BreadDate {} ({}active)>'.format(self.date, "in"*(not self.active))
+        return '<BreadOrderDate {} ({}active)>'.format(self.date, "in"*(not self.is_active))
 
 
 class BreadType(db.Model):
@@ -306,6 +304,7 @@ class BreadType(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
+    price = db.Column(db.Integer, nullable=False, default=0)
 
     def __repr__(self):
         return '<BreadType {}>'.format(self.name)
