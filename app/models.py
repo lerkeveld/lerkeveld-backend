@@ -23,6 +23,7 @@ association_material_reservation_items = db.Table(
 association_bread_order_items = db.Table(
     'association_bread_type',
     db.Model.metadata,
+    db.Column('id', db.Integer, primary_key=True),
     db.Column('order_id', db.Integer, db.ForeignKey('bread_order.id')),
     db.Column('type_id', db.Integer, db.ForeignKey('bread_type.id'))
 )

@@ -62,7 +62,8 @@ class BreadOrderResource(Resource):
         if order is None:
             order = BreadOrder(bread_order_date=order_date, user=user)
 
-        order.items.extend(data.get('items'))
+        order.items.append(*data.get('items'))
+        print(order.items)
         db.session.add(order)
         db.session.commit()
         return {'success': True}
