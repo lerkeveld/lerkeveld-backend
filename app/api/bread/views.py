@@ -35,7 +35,7 @@ class BreadOrderListResource(Resource):
             if order is None:
                 orderdate.items = []
             else:
-                orderdate.items = order.items
+                orderdate.items = list(order.items)
 
         data, _ = order_schema.dump(orderdates)
         return {'success': True, 'orders': data}
@@ -56,14 +56,11 @@ class BreadDateResource(Resource):
         if not order_date or not order_date.is_editable:
             return {'msg': '400 Bad Request'}, 400
 
-        order = (BreadOrder.query
-                 .filter(BreadOrder.bread_order_date == order_date)
-                 .filter(BreadOrder.user == user).first())
+        order = BreadOrder.get_by_date_and_user(order_date, user)
         if order is None:
             order = BreadOrder(bread_order_date=order_date, user=user)
 
         order.items.append(*data.get('items'))
-        print(order.items)
         db.session.add(order)
         db.session.commit()
         return {'success': True}
@@ -75,12 +72,10 @@ class BreadDateResource(Resource):
         if not order_date or not order_date.is_editable:
             return {'msg': '400 Bad Request'}, 400
 
-        order = (BreadOrder.query
-                 .filter(BreadOrder.bread_order_date == order_date)
-                 .filter(BreadOrder.user == user).first())
+        order = BreadOrder.get_by_date_and_user(order_date, user)
         if order is not None:
             db.session.delete(order)
-        db.session.commit()
+            db.session.commit()
         return {'success': True}
 
 
