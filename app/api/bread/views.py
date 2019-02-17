@@ -76,7 +76,9 @@ class BreadDateResource(Resource):
         if order is not None:
             db.session.delete(order)
             db.session.commit()
-        return {'success': True}
+            return {'success': True}
+        else:
+            return {'msg': 'Geen bestelling om te verwijderen'}, 400
 
 
 @api.resource('/bread/type')
