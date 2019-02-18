@@ -74,7 +74,7 @@ db.session.commit()
 ```
 
 #### Adding material
-Add users to the database using a python shell (from the repository root execute `env/bin/python`):
+Add material to the database using a python shell (from the repository root execute `env/bin/python`):
 ```python
 from app import db
 from app.models import MaterialType
@@ -84,6 +84,25 @@ material3 = MaterialType(name='BBQ 2')
 db.session.add(material1)
 db.session.add(material2)
 db.session.add(material3)
+db.session.commit()
+```
+
+#### Adding bread weeks and types
+Add bread weeks and types to the database using a python shell (from the repository root execute `env/bin/python`):
+```python
+import datetime
+from app import db
+from app.models import BreadOrderDate, BreadOrder, BreadType
+db.session.add(BreadType(name="wit brood", price=200))
+db.session.add(BreadType(name="grijs brood", price=200))
+db.session.add(BreadType(name="blauw brood", price=2000))
+db.session.add(BreadType(name="melk", price=60))
+db.session.commit()
+db.session.add(BreadOrderDate(date=datetime.date(2019,3,1)))
+db.session.add(BreadOrderDate(date=datetime.date(2019,3,2)))
+db.session.add(BreadOrderDate(date=datetime.date(2019,3,3)))
+db.session.add(BreadOrderDate(date=datetime.date(2019,3,4)))
+db.session.add(BreadOrderDate(date=datetime.date(2019,3,5)))
 db.session.commit()
 ```
 
