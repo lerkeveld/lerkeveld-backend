@@ -7,78 +7,75 @@ from flask_restful import Resource
 from app import db
 from app.api import api
 from app.models import BreadOrder, BreadType, BreadOrderDate
-from .schema import OrderSchema, BreadListSchema, BreadTypeSchema
+from .queries import get_all_order_dates
+from .schema import BreadOrderDates, BreadOrderingSchema, BreadTypeSchema
 
-order_schema = OrderSchema(many=True)
-breadlist_schema = BreadListSchema()
+bread_order_dates_schema = BreadOrderDates(many=True)
+bread_ordering_schema = BreadOrderingSchema()
 bread_types_schema = BreadTypeSchema(many=True)
 
 
 @api.resource('/bread/')
-class BreadOrderListResource(Resource):
+class BreadOrderDateListResource(Resource):
 
     @jwt.jwt_required
     def get(self):
-        startdate = datetime.date.today()
-        if startdate.month >= 9:
-            startdate = startdate.replace(month=9, day=1)
+        # TODO: solve start_date hack
+        start_date = datetime.date.today()
+        if start_date.month >= 9:
+            start_date = start_date.replace(month=9, day=1)
         else:
-            startdate = startdate.replace(month=1, day=1)
+            start_date = start_date.replace(month=1, day=1)
 
         user = jwt.current_user
-        orderdates = BreadOrderDate.get_all_after(startdate)
+        order_dates = get_all_order_dates(user, start_date)
 
-        for orderdate in orderdates:
-            order = (BreadOrder.query
-                     .filter(BreadOrder.bread_order_date == orderdate)
-                     .filter(BreadOrder.user == user).first())
-            if order is None:
-                orderdate.items = []
-            else:
-                orderdate.items = list(order.items)
-
-        data, _ = order_schema.dump(orderdates)
-        return {'success': True, 'orders': data}
+        data, _ = bread_order_dates_schema.dump(order_dates)
+        return {'success': True, 'order_dates': data}
 
 
 @api.resource('/bread/<int:order_date_id>')
-class BreadDateResource(Resource):
+class BreadOrderDateResource(Resource):
 
     @jwt.jwt_required
     def patch(self, order_date_id):
+        order_date = BreadOrderDate.query.get(order_date_id)
+        if not order_date:
+            return {'msg': 'Order date not found'}, 400
+        if not order_date.is_editable:
+            return {'msg': 'Order date not editable'}, 400
+
         json_data = request.get_json()
-        data, errors = breadlist_schema.load(json_data)
+        data, errors = bread_ordering_schema.load(json_data)
         if not data or errors:
             return {'msg': '400 Bad Request', 'errors': errors}, 400
 
         user = jwt.current_user
-        order_date = BreadOrderDate.query.get(order_date_id)
-        if not order_date or not order_date.is_editable:
-            return {'msg': '400 Bad Request'}, 400
-
-        order = BreadOrder.get_by_date_and_user(order_date, user)
-        if order is None:
-            order = BreadOrder(bread_order_date=order_date, user=user)
-
-        order.items.append(*data.get('items'))
-        db.session.add(order)
+        for item in data.get('items'):
+            order = BreadOrder(
+                user=user,
+                date=order_date,
+                type=item
+            )
+            db.session.add(order)
         db.session.commit()
         return {'success': True}
 
     @jwt.jwt_required
     def delete(self, order_date_id):
-        user = jwt.current_user
         order_date = BreadOrderDate.query.get(order_date_id)
-        if not order_date or not order_date.is_editable:
-            return {'msg': '400 Bad Request'}, 400
+        if not order_date:
+            return {'msg': 'Order date not found'}, 400
+        if not order_date.is_editable:
+            return {'msg': 'Order date not editable'}, 400
 
-        order = BreadOrder.get_by_date_and_user(order_date, user)
-        if order is not None:
-            db.session.delete(order)
-            db.session.commit()
-            return {'success': True}
-        else:
-            return {'msg': 'Geen bestelling om te verwijderen'}, 400
+        user = jwt.current_user
+        db.session.query(BreadOrder).filter(
+            BreadOrder.user_id == user.id,
+            BreadOrder.date_id == order_date_id
+        ).delete()
+        db.session.commit()
+        return {'success': True}
 
 
 @api.resource('/bread/type')

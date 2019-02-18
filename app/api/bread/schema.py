@@ -13,19 +13,26 @@ def validate_not_none(value):
 
 
 class BreadTypeSchema(ma.Schema):
+    id = fields.Integer()
     name = fields.String()
     price = fields.Integer()
 
 
-class OrderSchema(ma.Schema):
+class BreadOrderSchema(ma.Schema):
+    id = fields.Integer()
+    type = fields.String()
+
+
+class BreadOrderDates(ma.Schema):
     id = fields.Integer()
     date = fields.Date()
-    items = fields.List(fields.Nested(BreadTypeSchema))
     is_active = fields.Boolean()
     is_editable = fields.Boolean()
+    orders = fields.List(fields.Nested(BreadOrderSchema))
+    total_price = fields.Integer()
 
 
-class BreadListSchema(ma.Schema):
+class BreadOrderingSchema(ma.Schema):
     items = fields.List(
         fields.Function(
             deserialize=lambda item: BreadType.from_name(item),

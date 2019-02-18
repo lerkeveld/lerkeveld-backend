@@ -234,6 +234,25 @@ class MaterialType(db.Model):
         return cls.query.filter_by(name=name).first()
 
 
+class BreadOrder(db.Model):
+
+    __tablename__ = 'bread_order'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    date_id = db.Column(db.Integer, db.ForeignKey('bread_order_date.id'))
+    type_id = db.Column(db.Integer, db.ForeignKey('bread_type.id'))
+
+    user = db.relationship('User')
+    date = db.relationship('BreadOrderDate')
+    type = db.relationship('BreadType')
+
+    def __repr__(self):
+        return '<BreadOrder by {} on {} for {}>'.format(
+            self.user.fullname, self.date.date, self.type.name
+        )
+
+
 class BreadOrderDate(db.Model):
 
     __tablename__ = 'bread_order_date'
@@ -242,55 +261,15 @@ class BreadOrderDate(db.Model):
     date = db.Column(db.Date, nullable=False)
     is_active = db.Column(db.Boolean, nullable=False, default=True)
 
-    orders = db.relationship('BreadOrder', back_populates="bread_order_date") #TODO cascade
-
     @property
     def is_editable(self):
-        return self.is_active and self.date - datetime.date.today() >= datetime.timedelta(days=2)
-
-    @classmethod
-    def get_all_after(cls, start_date):
-        """
-        Returns all bread orders after the given start date.
-        """
-        return (cls.query
-                .filter(cls.date > start_date)
-                .all())
+        return (self.is_active and
+                self.date - datetime.date.today() >= datetime.timedelta(days=2))
 
     def __repr__(self):
-        return '<BreadOrderDate {} ({}active)>'.format(self.date, "in"*(not self.is_active))
-
-
-class BreadOrder(db.Model):
-
-    __tablename__ = 'bread_order'
-
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    date_id = db.Column(db.Integer, db.ForeignKey('bread_order_date.id'))
-
-    user = db.relationship('User')
-    bread_order_date = db.relationship('BreadOrderDate', back_populates="orders")
-
-    item_assoc = db.relationship("BreadOrderItemAssociation")
-    items = association_proxy('item_assoc', 'item',
-                              creator=lambda itm: BreadOrderItemAssociation(item=itm))
-
-    def __repr__(self):
-        return '<BreadOrder by {} on {}>'.format(
-            self.user.fullname, self.bread_order_date.date
+        return '<BreadOrderDate {} ({}active)>'.format(
+            self.date, "in"*(not self.is_active)
         )
-
-    @classmethod
-    def get_by_date_and_user(cls, date, user):
-        """
-        Returns bread order for a given date and user.
-        """
-        return (cls.query
-                .join(BreadOrderDate)
-                .filter(cls.user == user)
-                .filter(cls.bread_order_date == date)
-                .first())
 
 
 class BreadType(db.Model):
@@ -309,11 +288,3 @@ class BreadType(db.Model):
         return cls.query.filter_by(name=name).first()
 
 
-class BreadOrderItemAssociation(db.Model):
-
-    __tablename__ = 'association_bread_type'
-
-    association_id = db.Column('id', db.Integer, primary_key=True)
-    bread_type_id = db.Column(db.Integer, db.ForeignKey('bread_type.id'))
-    bread_order_id = db.Column(db.Integer, db.ForeignKey('bread_order.id'))
-    item = db.relationship("BreadType")
