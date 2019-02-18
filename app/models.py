@@ -1,4 +1,7 @@
 import sqlalchemy.sql as sql
+import datetime
+
+from sqlalchemy.ext.associationproxy import association_proxy
 
 from app import db
 from app.security import (
@@ -229,3 +232,59 @@ class MaterialType(db.Model):
     @classmethod
     def from_name(cls, name):
         return cls.query.filter_by(name=name).first()
+
+
+class BreadOrder(db.Model):
+
+    __tablename__ = 'bread_order'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    date_id = db.Column(db.Integer, db.ForeignKey('bread_order_date.id'))
+    type_id = db.Column(db.Integer, db.ForeignKey('bread_type.id'))
+
+    user = db.relationship('User')
+    date = db.relationship('BreadOrderDate')
+    type = db.relationship('BreadType')
+
+    def __repr__(self):
+        return '<BreadOrder by {} on {} for {}>'.format(
+            self.user.fullname, self.date.date, self.type.name
+        )
+
+
+class BreadOrderDate(db.Model):
+
+    __tablename__ = 'bread_order_date'
+
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.Date, nullable=False)
+    is_active = db.Column(db.Boolean, nullable=False, default=True)
+
+    @property
+    def is_editable(self):
+        return (self.is_active and
+                self.date - datetime.date.today() >= datetime.timedelta(days=2))
+
+    def __repr__(self):
+        return '<BreadOrderDate {} ({}active)>'.format(
+            self.date, "in"*(not self.is_active)
+        )
+
+
+class BreadType(db.Model):
+
+    __tablename__ = 'bread_type'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    price = db.Column(db.Integer, nullable=False, default=0)
+
+    def __repr__(self):
+        return '<BreadType {}>'.format(self.name)
+
+    @classmethod
+    def from_name(cls, name):
+        return cls.query.filter_by(name=name).first()
+
+
