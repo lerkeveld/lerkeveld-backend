@@ -132,7 +132,7 @@ def send_materiaal_reservation_admin(reservation):
     """
     msg = Message()
     msg.subject = 'Lerkeveld Underground - Reservatie Materiaal'
-    msg.recipients = app.config.get('MAIL_KOTBAR_ADMIN', [])
+    msg.recipients = app.config.get('MAIL_MATERIAAL_ADMIN', [])
     msg.body = render_template(
         'emails/materiaal_reservation_admin.txt', reservation=reservation
     )
