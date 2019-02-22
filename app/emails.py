@@ -12,6 +12,9 @@ with app.open_resource('assets/kotbar_rules.pdf') as f:
 with app.open_resource('assets/kotbar_plan.jpg') as f:
     KOTBAR_PLAN = f.read()
 
+with app.open_resource('assets/materiaal_rules.pdf') as f:
+    MATERIAAL_RULES = f.read()
+
 
 @async
 def send_async_email(msg):
@@ -78,16 +81,16 @@ def send_kotbar_reservation(reservation):
         'emails/kotbar_reservation.html', reservation=reservation
     )
     msg.attach(
-        'rules.pdf',
+        'kotbar_rules.pdf',
         'application/pdf',
         KOTBAR_RULES,
-        'attachment; filename="rules.pdf"'
+        'attachment; filename="kotbar_rules.pdf"'
     )
     msg.attach(
         'plan.jpg',
         'image/jpeg',
         KOTBAR_PLAN,
-        'attachment; filename="plan.jpg"'
+        'attachment; filename="kotbar_plan.jpg"'
     )
     send_async_email(msg)
 
@@ -121,6 +124,12 @@ def send_materiaal_reservation(reservation):
     )
     msg.html = render_template(
         'emails/materiaal_reservation.html', reservation=reservation
+    )
+    msg.attach(
+        'materiaal_rules.pdf',
+        'application/pdf',
+        MATERIAAL_RULES,
+        'attachment; filename="materiaal_rules.pdf"'
     )
     send_async_email(msg)
 
