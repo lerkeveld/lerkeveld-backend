@@ -26,7 +26,10 @@ class ReservationSchema(ma.Schema):
     username = fields.Function(lambda reservation: reservation.user.fullname)
     date = fields.Date()
     items = fields.Function(
-        lambda reservation: list(map(lambda item: item.name, reservation.items))
+        lambda reservation: list(map(lambda item: {
+            'id': item.id,
+            'name': item.name
+        }, reservation.items))
     )
     own = fields.Boolean()
 
@@ -35,7 +38,7 @@ class ReserveSchema(ma.Schema):
     date = fields.Date(required=True)
     items = fields.List(
         fields.Function(
-            deserialize=lambda item: MaterialType.from_name(item),
+            deserialize=lambda item: MaterialType.query.get(item),
             validate=validate_not_none
         ),
         required=True,
@@ -54,4 +57,5 @@ class ReserveSchema(ma.Schema):
 
 
 class MaterialTypeSchema(ma.Schema):
+    id = fields.Integer()
     name = fields.String()
