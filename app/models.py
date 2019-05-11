@@ -264,7 +264,7 @@ class BreadOrderDate(db.Model):
     @property
     def is_editable(self):
         return (self.is_active and
-                self.date - datetime.date.today() >= datetime.timedelta(days=2))
+                self.date - datetime.date.today() > datetime.timedelta(days=2))
 
     def __repr__(self):
         return '<BreadOrderDate {} ({}active)>'.format(
