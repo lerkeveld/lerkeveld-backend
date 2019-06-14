@@ -52,7 +52,7 @@ class ReserveSchema(ma.Schema):
         """
         booked_items = set(get_items_booked_on_date(data.get('date')))
         for item in data.get('items'):
-            if item and item.name in booked_items:
+            if item and item.id in booked_items:
                 raise ValidationError('Items contains a previously booked item')
 
 
