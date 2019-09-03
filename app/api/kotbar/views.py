@@ -26,15 +26,16 @@ class KotbarReservationListResource(Resource):
         for reservation in reservations:
             reservation.own = user.id == reservation.user.id
 
-        data, _ = reservations_schema.dump(reservations)
+        data = reservations_schema.dump(reservations)
         return {'success': True, 'reservations': data}
 
     @jwt.jwt_required
     def post(self):
         json_data = request.get_json()
-        data, errors = reserve_schema.load(json_data)
-        if not data or errors:
-            return {'msg': '400 Bad Request', 'errors': errors}, 400
+        try:
+            data = reserve_schema.load(json_data)
+        except ma.ValidationError as err:
+            return {'msg': '400 Bad Request', 'errors': err.messages}, 400
 
         user = jwt.current_user
 

@@ -52,11 +52,13 @@ def reset(token):
     errors = {}
     if request.method == 'POST':
         request_data = request.form
-        data, errors = reset_schema.load(request_data)
-        if data and not errors:
+        try:
+            data = reset_schema.load(request_data)
             user.set_password(data.get('password'))
             db.session.add(user)
             db.session.commit()
             return render_template('token/reset_success.html')
+        except ma.ValidationError as err:
+            errors = err.messages
 
     return render_template('token/reset.html', token=token, errors=errors)

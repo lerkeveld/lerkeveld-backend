@@ -19,7 +19,7 @@ class UserResource(Resource):
     @jwt.jwt_required
     def get(self):
         user = jwt.current_user
-        data, _ = user_schema.dump(user)
+        data = user_schema.dump(user)
         return {'success': True, 'user': data}
 
 
@@ -29,9 +29,10 @@ class UserEditResource(Resource):
     @jwt.jwt_required
     def post(self):
         json_data = request.get_json()
-        data, errors = edit_schema.load(json_data)
-        if not data or errors:
-            return {'msg': '400 Bad Request', 'errors': errors}, 400
+        try:
+            data = edit_schema.load(json_data)
+        except ma.ValidationError as err:
+            return {'msg': '400 Bad Request', 'errors': err.messages}, 400
 
         is_sharing = data.get('is_sharing')
 
@@ -49,9 +50,10 @@ class UserEditSecureResource(Resource):
     @jwt.jwt_required
     def post(self):
         json_data = request.get_json()
-        data, errors = edit_secure_schema.load(json_data)
-        if not data or errors:
-            return {'msg': '400 Bad Request', 'errors': errors}, 400
+        try:
+            data = edit_secure_schema.load(json_data)
+        except ma.ValidationError as err:
+            return {'msg': '400 Bad Request', 'errors': err.messages}, 400
 
         check = data.get('check')
         email = data.get('email')
@@ -75,5 +77,5 @@ class UsersResource(Resource):
     @jwt.jwt_required
     def get(self):
         users = User.query.all()
-        data, _ = public_users_schema.dump(users)
+        data = public_users_schema.dump(users)
         return {'success': True, 'users': data}

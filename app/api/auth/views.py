@@ -18,9 +18,10 @@ class LoginResource(Resource):
 
     def post(self):
         json_data = request.get_json()
-        data, errors = login_schema.load(json_data)
-        if not data or errors:
-            return {'msg': '400 Bad Request', 'errors': errors}, 400
+        try:
+            data = login_schema.load(json_data)
+        except ma.ValidationError as err:
+            return {'msg': '400 Bad Request', 'errors': err.messages}, 400
 
         email = data.get('email')
         password = data.get('password')
@@ -74,9 +75,10 @@ class ActivateResource(Resource):
 
     def post(self):
         json_data = request.get_json()
-        data, errors = activate_schema.load(json_data)
-        if not data or errors:
-            return {'msg': '400 Bad Request', 'errors': errors}, 400
+        try:
+            data = activate_schema.load(json_data)
+        except ma.ValidationError as err:
+            return {'msg': '400 Bad Request', 'errors': err.messages}, 400
 
         user = User.get_by_email(data.get('email'))
         if not user:
@@ -98,9 +100,10 @@ class ResetResource(Resource):
 
     def post(self):
         json_data = request.get_json()
-        data, errors = reset_schema.load(json_data)
-        if not data or errors:
-            return {'msg': '400 Bad Request', 'errors': errors}, 400
+        try:
+            data = reset_schema.load(json_data)
+        except ma.ValidationError as err:
+            return {'msg': '400 Bad Request', 'errors': err.messages}, 400
 
         user = User.get_by_email(data.get('email'))
         if not user:
