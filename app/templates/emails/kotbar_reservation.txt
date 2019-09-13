@@ -6,8 +6,6 @@ meubilair in de kotbar zoals het moet achtergelaten worden. Hieronder volgt
 een samenvatting van je reservatie:
 
 Naam:         {{ reservation.user.fullname }}
-E-mailadres:  {{ reservation.user.email }}
-GSM:          {{ reservation.user.phone }}
 Datum:        {{ reservation.date }}
 Beschrijving: {{ reservation.description }}
 

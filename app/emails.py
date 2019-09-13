@@ -100,14 +100,23 @@ def send_kotbar_reservation_admin(reservation):
     Sends an email to notify the kotbar mailinglist of a new successful
     reservation.
     """
+    token = app.config.get('TOKEN_KOTBAR_RESERVATIONS', None)
+    secret_url = url_for(
+        'token.kotbar_reservations', token=token, _external=True
+    )
+
     msg = Message()
     msg.subject = 'Lerkeveld Underground - Reservatie Kotbar'
     msg.recipients = app.config.get('MAIL_KOTBAR_ADMIN', [])
     msg.body = render_template(
-        'emails/kotbar_reservation_admin.txt', reservation=reservation
+        'emails/kotbar_reservation_admin.txt',
+        reservation=reservation,
+        secret_url=secret_url
     )
     msg.html = render_template(
-        'emails/kotbar_reservation_admin.html', reservation=reservation
+        'emails/kotbar_reservation_admin.html',
+        reservation=reservation,
+        secret_url=secret_url
     )
     send_async_email(msg)
 
