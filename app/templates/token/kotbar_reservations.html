@@ -1,0 +1,12 @@
+{% extends "token/_base.html" %}
+{% block main %}
+<ul class="w3-ul" style="height:400px; overflow-y: scroll;">
+{% for reservation in reservations %}
+<li> 
+    <b><u>{{reservation.date}}</u></b><br>
+    <span>{{reservation.user.fullname}}</span><br>
+    <span>{{reservation.description}}</span>
+</li>
+{% endfor %}
+</ul>
+{% endblock main %}

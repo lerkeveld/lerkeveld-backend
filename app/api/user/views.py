@@ -1,3 +1,5 @@
+import marshmallow as ma
+
 import flask_jwt_extended as jwt
 from flask import request
 from flask_restful import Resource

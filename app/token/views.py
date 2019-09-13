@@ -1,8 +1,10 @@
+import datetime
+
 from flask import render_template, request, abort
 from itsdangerous import BadData, SignatureExpired
 
-from app import db
-from app.models import User
+from app import app, db
+from app.models import User, KotbarReservation
 from app.security import load_token
 from app.token import token_blueprint
 from .schema import ResetSchema
@@ -62,3 +64,21 @@ def reset(token):
             errors = err.messages
 
     return render_template('token/reset.html', token=token, errors=errors)
+
+
+@token_blueprint.route('/kotbar_reservations/<token>', methods=['GET'])
+def kotbar_reservations(token):
+    """
+    A view which presents the user with the coming kotbar reservations.
+    """
+    if token != app.config.get('TOKEN_KOTBAR_RESERVATIONS', None):
+        return render_template('token/failure.html')
+
+    yesterday = datetime.date.today() - datetime.timedelta(1)
+    reservations = KotbarReservation.get_all_after(yesterday)
+    reservations = sorted(reservations, key=lambda r: r.date)
+
+    return render_template(
+        'token/kotbar_reservations.html',
+        reservations=reservations
+    )

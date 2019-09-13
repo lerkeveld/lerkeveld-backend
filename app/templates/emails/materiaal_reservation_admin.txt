@@ -4,8 +4,6 @@ Een gebruiker heeft materiaal gereserveerd.
 Hieronder volgt een samenvatting van de reservatie:
 
 Naam:           {{ reservation.user.fullname }}
-E-mailadres:    {{ reservation.user.email }}
-GSM:            {{ reservation.user.phone }}
 Datum:          {{ reservation.date }}
 Type materiaal: {{ reservation.items|map(attribute="name")|join(", ") }}
 

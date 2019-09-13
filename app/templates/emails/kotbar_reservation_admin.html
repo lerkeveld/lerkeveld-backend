@@ -13,15 +13,15 @@
         Naam: {{ reservation.user.fullname }}
     </div>
     <div>
-        E-mailadres: <a href="mailto:{{ reservation.user.email}}">{{ reservation.user.email }}</a></div>
-    <div>
-        GSM: {{ reservation.user.phone }}
-    </div>
-    <div>
         Datum: {{ reservation.date }}
     </div>
     <div>
         Beschrijving: {{ reservation.description }}
+    </div>
+    <div><br></div>
+    <div>
+        Voor een overzicht van alle komende reservaties klik hier:
+        <a href="{{ secret_url }}">{{ secret_url }}</a>
     </div>
     <div><br></div>
     <div>
