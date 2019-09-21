@@ -10,7 +10,7 @@ class UserSchema(ma.Schema):
     email = fields.Email()
     phone = fields.String()
     corridor = fields.String()
-    room = fields.Integer()
+    room = fields.String()
     is_sharing = fields.Boolean()
     is_member = fields.Boolean()
 
@@ -32,4 +32,4 @@ class PublicUserSchema(ma.Schema):
     email = fields.Function(lambda user: user.email if user.is_sharing else None)
     phone = fields.Function(lambda user: user.phone if user.is_sharing else None)
     corridor = fields.String()
-    room = fields.Integer()
+    room = fields.String()

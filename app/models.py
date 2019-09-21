@@ -39,7 +39,7 @@ class User(db.Model):
     email = db.Column(db.String(128), unique=True, nullable=False)
     phone = db.Column(db.String(16), default=None)
     corridor = db.Column(db.String(4), default=None)
-    room = db.Column(db.Integer, default=None)
+    room = db.Column(db.String(8), default=None)
 
     # User capabilities
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
