@@ -1,12 +1,17 @@
 import datetime
+import marshmallow as ma
 
 from flask import render_template, request, abort
 from itsdangerous import BadData, SignatureExpired
 
 from app import app, db
-from app.models import User, KotbarReservation
+from app.models import User, KotbarReservation, BreadOrderDate
 from app.security import load_token
 from app.token import token_blueprint
+from app.api.bread.queries import (
+        get_week_order_detailed,
+        get_week_order_totals
+     )
 from .schema import ResetSchema
 
 reset_schema = ResetSchema()
@@ -81,4 +86,45 @@ def kotbar_reservations(token):
     return render_template(
         'token/kotbar_reservations.html',
         reservations=reservations
+    )
+
+
+@token_blueprint.route('/bread_reservations/<token>', methods=['GET'])
+def bread_reservations(token):
+    """
+    A view which presents the user with the current bread reservations.
+    """
+    if token != app.config.get('TOKEN_BREAD_RESERVATIONS', None):
+        return render_template('token/failure.html')
+
+    reservations = BreadOrderDate.query.all()
+    reservations = sorted(reservations, key=lambda r: r.date)
+
+    return render_template(
+        'bread/bread_reservations.html',
+        reservations=reservations,
+        token=token
+    )
+
+
+@token_blueprint.route('/bread_reservation/<int:odi>/<token>', methods=['GET'])
+def bread_reservation(token, odi):
+    """
+    A view which presents the user with the bread reservation of a week.
+    """
+    if token != app.config.get('TOKEN_BREAD_RESERVATIONS', None):
+        return render_template('token/failure.html')
+
+    order_date = BreadOrderDate.query.get(odi)
+    if not order_date:
+        return abort(404)
+
+    # These are iterators, they only yield their results once
+    orders = get_week_order_detailed(order_date)
+    totals = get_week_order_totals(order_date)
+
+    return render_template(
+        'bread/bread_reservation_week.html',
+        orders=orders,
+        totals=totals
     )
