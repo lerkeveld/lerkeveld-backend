@@ -9,9 +9,9 @@ from app.models import User, KotbarReservation, BreadOrderDate
 from app.security import load_token
 from app.token import token_blueprint
 from app.api.bread.queries import (
-        get_week_order_detailed,
-        get_week_order_totals
-     )
+    get_week_order_detailed,
+    get_week_order_totals
+)
 from .schema import ResetSchema
 
 reset_schema = ResetSchema()
@@ -101,7 +101,7 @@ def bread_reservations(token):
     reservations = sorted(reservations, key=lambda r: r.date)
 
     return render_template(
-        'bread/bread_reservations.html',
+        'token/bread_reservations.html',
         reservations=reservations,
         token=token
     )
@@ -124,7 +124,7 @@ def bread_reservation(token, odi):
     totals = get_week_order_totals(order_date)
 
     return render_template(
-        'bread/bread_reservation_week.html',
+        'token/bread_reservation_week.html',
         orders=orders,
         totals=totals
     )

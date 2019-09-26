@@ -1,6 +1,7 @@
+import sqlalchemy as sqla
+
 from app import db
 from app.models import BreadOrder, BreadOrderDate
-from sqlalchemy import text
 
 
 def get_order_dates(after_date):
@@ -56,13 +57,15 @@ def get_week_order_detailed(date):
     """
     Get all user orders for a certain week.
     """
-    query = text(""" select u.first_name, u.last_name, u.corridor, u.room,
-                 bt.name from bread_order_date as bod
-                 join bread_order as bo on bod.id = bo.date_id
-                 join user as u on bo.user_id = u.id
-                 join bread_type as bt on bo.type_id = bt.id
-                 where bod.id = :date
-                 order by u.corridor, u.room asc""")
+    query = sqla.text("""
+        SELECT u.first_name, u.last_name, u.corridor, u.room, bt.name
+        FROM bread_order_date as bod
+        JOIN bread_order as bo ON bod.id = bo.date_id
+        JOIN user as u ON bo.user_id = u.id
+        JOIN bread_type as bt ON bo.type_id = bt.id
+        WHERE bod.id = :date
+        ORDER BY u.corridor, u.room asc
+    """)
     return db.session.execute(query, {"date": date.id})
 
 
@@ -70,13 +73,15 @@ def get_week_order_totals(date):
     """
     Get the totals for the order for a certain week.
     """
-    query = text("""select bt.id, bt.name, count(bod.id)
-                 from bread_order_date as bod
-                 join bread_order as bo on bod.id = bo.date_id
-                 join bread_type as bt on bo.type_id = bt.id
-                 where bod.id = :date
-                 group by(bt.id)
-                 order by bt.id""")
+    query = sqla.text("""
+        SELECT bt.id, bt.name, COUNT(bod.id)
+        FROM bread_order_date as bod
+        JOIN bread_order as bo ON bod.id = bo.date_id
+        JOIN bread_type as bt ON bo.type_id = bt.id
+        WHERE bod.id = :date
+        GROUP BY(bt.id)
+        ORDER BY bt.id
+    """)
     return db.session.execute(query, {"date": date.id})
 
 

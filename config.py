@@ -42,7 +42,10 @@ MAIL_KOTBAR_ADMIN = []
 MAIL_MATERIAAL_ADMIN = []
 
 # kotbar reservations
-KOTBAR_RESERVATIONS_TOKEN = os.urandom(64)
+TOKEN_KOTBAR_RESERVATIONS = os.urandom(64)
+
+# bem overview
+TOKEN_BREAD_RESERVATIONS = os.urandom(64)
 
 # itsdangerous
 TOKEN_MAX_AGE = 2 * 24 * 60 * 60
