@@ -1,3 +1,5 @@
+import sqlalchemy as sqla
+
 from app import db
 from app.models import BreadOrder, BreadOrderDate
 
@@ -49,6 +51,38 @@ def get_order_dates_extended(user, after_date):
         })
         data['total_price'] += order.type.price
     return result.values()
+
+
+def get_week_order_detailed(date):
+    """
+    Get all user orders for a certain week.
+    """
+    query = sqla.text("""
+        SELECT u.first_name, u.last_name, u.corridor, u.room, bt.name
+        FROM bread_order_date as bod
+        JOIN bread_order as bo ON bod.id = bo.date_id
+        JOIN user as u ON bo.user_id = u.id
+        JOIN bread_type as bt ON bo.type_id = bt.id
+        WHERE bod.id = :date
+        ORDER BY u.corridor, u.room asc
+    """)
+    return db.session.execute(query, {"date": date.id})
+
+
+def get_week_order_totals(date):
+    """
+    Get the totals for the order for a certain week.
+    """
+    query = sqla.text("""
+        SELECT bt.id, bt.name, COUNT(bod.id)
+        FROM bread_order_date as bod
+        JOIN bread_order as bo ON bod.id = bo.date_id
+        JOIN bread_type as bt ON bo.type_id = bt.id
+        WHERE bod.id = :date
+        GROUP BY(bt.id)
+        ORDER BY bt.id
+    """)
+    return db.session.execute(query, {"date": date.id})
 
 
 def add_orders_on(user, order_date, items):

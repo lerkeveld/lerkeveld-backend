@@ -1,0 +1,14 @@
+{% set cardwidth = "350px" %}
+
+{% extends "token/_base.html" %}
+{% block main %}
+<ul class="w3-ul" style="height:400px; overflow-y: scroll;">
+{% for reservation in reservations %}
+    <a href="{{ url_for("token.bread_reservation", token=token, odi=reservation.id) }}">
+        <li class="{{ "w3-hover-yellow" if reservation.is_active else "w3-gray w3-hover-opacity" }}">
+            <span style="text-decoration: none"> week van <b><u>{{reservation.date}}</u></b></span><br>
+        </li>
+    </a>
+{% endfor %}
+</ul>
+{% endblock main %}

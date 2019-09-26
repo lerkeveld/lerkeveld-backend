@@ -1,0 +1,19 @@
+{% set cardwidth = "850px" %}
+
+{% extends "token/_base.html" %}
+{% block main %}
+<ul class="w3-ul" style="height:400px; overflow-y: scroll;">
+    <li>
+        <b>Totalen:</b><br>
+        {% for total in totals %}
+        {{ total[1] }}: {{ total[2] }}<br>
+        {% endfor %}
+    </li>
+    <li> 
+        <b>Lijst:</b><br>
+        {% for order in orders %}
+        <span>{{order[0]}} {{order[1]}} {{order[2]}}/{{order[3]}}: {{order[4]}}</span><br>
+        {% endfor %}
+    </li>
+</ul>
+{% endblock main %}

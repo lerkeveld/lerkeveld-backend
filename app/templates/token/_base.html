@@ -1,3 +1,5 @@
+{% set cardwidth = cardwidth|default('350px') -%}
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -41,7 +43,7 @@
         }
         #card {
             width: 100%;
-            max-width: 350px;
+            max-width: {{ cardwidth }};
             padding: 16px 24px 16px 24px;
             background-color: #fff;
         }
