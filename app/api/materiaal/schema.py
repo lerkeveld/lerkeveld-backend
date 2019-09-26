@@ -46,7 +46,7 @@ class ReserveSchema(ma.Schema):
     )
 
     @validates_schema
-    def validate_schema(self, data):
+    def validate_schema(self, data, **kwargs):
         """
         Validates this schema on duplicate bookings.
         """
