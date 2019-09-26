@@ -58,13 +58,13 @@ def get_week_order_detailed(date):
     Get all user orders for a certain week.
     """
     query = sqla.text("""
-        SELECT u.first_name, u.last_name, u.corridor, u.room, bt.name
-        FROM bread_order_date as bod
-        JOIN bread_order as bo ON bod.id = bo.date_id
-        JOIN user as u ON bo.user_id = u.id
-        JOIN bread_type as bt ON bo.type_id = bt.id
+        SELECT "user".first_name, "user".last_name, "user".corridor, "user".room, bt.name
+        FROM bread_order_date AS bod
+        JOIN bread_order AS bo ON bod.id = bo.date_id
+        JOIN "user" ON bo.user_id = "user".id
+        JOIN bread_type bt ON bo.type_id = bt.id
         WHERE bod.id = :date
-        ORDER BY u.corridor, u.room asc
+        ORDER BY "user".corridor, "user".room asc
     """)
     return db.session.execute(query, {"date": date.id})
 
@@ -75,9 +75,9 @@ def get_week_order_totals(date):
     """
     query = sqla.text("""
         SELECT bt.id, bt.name, COUNT(bod.id)
-        FROM bread_order_date as bod
-        JOIN bread_order as bo ON bod.id = bo.date_id
-        JOIN bread_type as bt ON bo.type_id = bt.id
+        FROM bread_order_date AS bod
+        JOIN bread_order AS bo ON bod.id = bo.date_id
+        JOIN bread_type AS bt ON bo.type_id = bt.id
         WHERE bod.id = :date
         GROUP BY(bt.id)
         ORDER BY bt.id
