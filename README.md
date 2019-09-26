@@ -44,6 +44,9 @@ MAIL_MATERIAAL_ADMIN = []
 
 # kotbar reservations
 TOKEN_KOTBAR_RESERVATIONS = 'secret'
+
+# bem overview
+TOKEN_BREAD_RESERVATIONS = 'secret'
 ```
 Some optional configuration changes:
 - Add your private IP address to `CORS_ORIGINS` to allow devices on your LAN to connect via the development version of the Lerkeveld Underground application.
@@ -148,9 +151,12 @@ MAIL_MATERIAAL_ADMIN = []
 
 # kotbar reservations
 TOKEN_KOTBAR_RESERVATIONS = 
+
+# bem overview
+TOKEN_BREAD_RESERVATIONS = 
 ```
 **Critical** configuration changes:
-- Change `SECRET_KEY`, `SQLALCHEMY_DATABASE_URI` (see later) and `TOKEN_KOTBAR_RESERVATIONS`, the web server errors otherwise.
+- Change `SECRET_KEY`, `SQLALCHEMY_DATABASE_URI` (see later), `TOKEN_KOTBAR_RESERVATIONS` and `TOKEN_BREAD_RESERVATIONS`, the web server errors otherwise.
 - Change `JWT_COOKIE_SECURE` to `False` if the API is served insecurly with HTTP.
 - Add to `CORS_ORIGINS` the domain name (with protocol, e.g. https://lerkies.simonbos.me) or IP address of the webserver hosting the frontend.
 - Add an email account (see https://stackoverflow.com/questions/37058567/configure-flask-mail-to-use-gmail) and uncomment the line with `MAIL_SUPPRESS_SEND`.
