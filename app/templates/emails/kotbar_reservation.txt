@@ -1,9 +1,8 @@
 Dag {{ reservation.user.first_name }},
 
 Deze email bevestigt dat je de Lerkeveld kotbar hebt gereserveerd. In bijlage
-vind je de enkele regels bij het gebruiken van de kotbar en een plan van het
-meubilair in de kotbar zoals het moet achtergelaten worden. Hieronder volgt
-een samenvatting van je reservatie:
+vind je enkele regels bij het gebruik van de kotbar. Hieronder volgt een
+samenvatting van je reservatie:
 
 Naam:         {{ reservation.user.fullname }}
 Datum:        {{ reservation.date }}

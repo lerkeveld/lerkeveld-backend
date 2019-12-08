@@ -9,9 +9,6 @@ from app.security import dump_token
 with app.open_resource('assets/kotbar_rules.pdf') as f:
     KOTBAR_RULES = f.read()
 
-with app.open_resource('assets/kotbar_plan.jpg') as f:
-    KOTBAR_PLAN = f.read()
-
 with app.open_resource('assets/materiaal_rules.pdf') as f:
     MATERIAAL_RULES = f.read()
 
@@ -85,12 +82,6 @@ def send_kotbar_reservation(reservation):
         'application/pdf',
         KOTBAR_RULES,
         'attachment; filename="kotbar_rules.pdf"'
-    )
-    msg.attach(
-        'plan.jpg',
-        'image/jpeg',
-        KOTBAR_PLAN,
-        'attachment; filename="kotbar_plan.jpg"'
     )
     send_async_email(msg)
 
