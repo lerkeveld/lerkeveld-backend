@@ -164,7 +164,7 @@ TOKEN_BREAD_RESERVATIONS =
 
 ### Setup the database
 
-#### PostgreSQL setup (recommended)
+#### PostgreSQL setup (recommended) (These steps should be made on the files hosted by Ulyssis, accessable via SSH)
 1. General methodology:
     1. Install postgresql
     2. Add a new user
