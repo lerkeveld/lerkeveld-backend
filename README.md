@@ -3,15 +3,14 @@ Backend of the Lerkeveld website, providing an api to the Lerkeveld Underground 
 
 ## Development
 Installation requirements:
-- python3
-- virtualenv
+- python3.8
 
 Installation instructions:
 
 ```bash
 git clone 'https://github.com/lerkeveld/lerkeveld-backend' .
 cd lerkeveld-backend
-virtualenv --python=python3 env
+python3.8 -m venv env
 ./env/bin/pip install -r requirements.txt
 touch secret.py
 ```
@@ -37,10 +36,11 @@ CORS_SUPPORTS_CREDENTIALS = True
 
 # flask_mail
 # MAIL_SUPPRESS_SEND = False
+MAIL_DEFAULT_SENDER = "test@example.com"
 
 # mailinglist
-MAIL_KOTBAR_ADMIN = []
-MAIL_MATERIAAL_ADMIN = []
+MAIL_KOTBAR_ADMIN = ["test-kotbar@example.com"]
+MAIL_MATERIAAL_ADMIN = ["test-materiaal@example.com"]
 
 # kotbar reservations
 TOKEN_KOTBAR_RESERVATIONS = 'secret'
@@ -104,26 +104,25 @@ db.session.add(BreadType(name="grijs brood", price=200))
 db.session.add(BreadType(name="blauw brood", price=2000))
 db.session.add(BreadType(name="melk", price=60))
 db.session.commit()
-db.session.add(BreadOrderDate(date=datetime.date(2019,3,1)))
-db.session.add(BreadOrderDate(date=datetime.date(2019,3,2)))
-db.session.add(BreadOrderDate(date=datetime.date(2019,3,3)))
-db.session.add(BreadOrderDate(date=datetime.date(2019,3,4)))
-db.session.add(BreadOrderDate(date=datetime.date(2019,3,5)))
+db.session.add(BreadOrderDate(date=datetime.date.today() + datetime.timedelta(days=1))
+db.session.add(BreadOrderDate(date=datetime.date.today() + datetime.timedelta(days=2))
+db.session.add(BreadOrderDate(date=datetime.date.today() + datetime.timedelta(days=3))
+db.session.add(BreadOrderDate(date=datetime.date.today() + datetime.timedelta(days=4))
+db.session.add(BreadOrderDate(date=datetime.date.today() + datetime.timedelta(days=5))
 db.session.commit()
 ```
 
 ## Production (Apache)
 Installation requirements:
 - apache (with `mod_fcgi` enabled)
-- python3
-- virtualenv
+- python3.8
 
 Installation instructions:
 ```bash
 git clone 'https://github.com/lerkeveld/lerkeveld-backend' .
 cd lerkeveld-backend
-virtualenv --python=python3 ~/.env
-~/.env/bin/pip install -r requirements.txt
+python3.8 -m venv env
+./env/bin/pip install -r requirements.txt
 touch secret.py
 ```
 

@@ -18,7 +18,7 @@ public_users_schema = PublicUserSchema(many=True)
 @api.resource('/user/profile')
 class UserResource(Resource):
 
-    @jwt.jwt_required
+    @jwt.jwt_required()
     def get(self):
         user = jwt.current_user
         data = user_schema.dump(user)
@@ -28,7 +28,7 @@ class UserResource(Resource):
 @api.resource('/user/edit')
 class UserEditResource(Resource):
 
-    @jwt.jwt_required
+    @jwt.jwt_required()
     def post(self):
         json_data = request.get_json()
         try:
@@ -49,7 +49,7 @@ class UserEditResource(Resource):
 @api.resource('/user/edit/secure')
 class UserEditSecureResource(Resource):
 
-    @jwt.jwt_required
+    @jwt.jwt_required()
     def post(self):
         json_data = request.get_json()
         try:
@@ -76,7 +76,7 @@ class UserEditSecureResource(Resource):
 @api.resource('/user/all')
 class UsersResource(Resource):
 
-    @jwt.jwt_required
+    @jwt.jwt_required()
     def get(self):
         users = User.query.all()
         data = public_users_schema.dump(users)

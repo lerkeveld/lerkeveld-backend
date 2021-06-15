@@ -60,7 +60,7 @@ class LogoutResource(Resource):
 @api.resource('/auth/refresh')
 class RefreshResource(Resource):
 
-    @jwt.jwt_refresh_token_required
+    @jwt.jwt_required(refresh=True)
     def post(self):
         user = jwt.get_jwt_identity()
         access_token = jwt.create_access_token(identity=user)

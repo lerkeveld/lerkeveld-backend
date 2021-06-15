@@ -13,6 +13,7 @@ with app.open_resource('assets/kotbar_rules.pdf') as f:
 with app.open_resource('assets/materiaal_rules.pdf') as f:
     MATERIAAL_RULES = f.read()
 
+
 async def send_async_email(msg):
     """
     Sends an email asynchronously.

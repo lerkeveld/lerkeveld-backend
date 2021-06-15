@@ -18,7 +18,7 @@ reserve_schema = ReserveSchema()
 @api.resource('/kotbar/')
 class KotbarReservationListResource(Resource):
 
-    @jwt.jwt_required
+    @jwt.jwt_required()
     def get(self):
         yesterday = datetime.date.today() - datetime.timedelta(1)
         reservations = KotbarReservation.get_all_after(yesterday)
@@ -30,7 +30,7 @@ class KotbarReservationListResource(Resource):
         data = reservations_schema.dump(reservations)
         return {'success': True, 'reservations': data}
 
-    @jwt.jwt_required
+    @jwt.jwt_required()
     def post(self):
         json_data = request.get_json()
         try:
@@ -56,7 +56,7 @@ class KotbarReservationListResource(Resource):
 @api.resource('/kotbar/<int:reservation_id>')
 class KotbarReservationResource(Resource):
 
-    @jwt.jwt_required
+    @jwt.jwt_required()
     def delete(self, reservation_id):
         user = jwt.current_user
         reservation = KotbarReservation.query.get(reservation_id)

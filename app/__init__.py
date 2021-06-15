@@ -37,12 +37,12 @@ app.register_blueprint(token_blueprint)
 import app.models as models
 
 
-@jwt.user_loader_callback_loader
-def load_user(identity):
+@jwt.user_lookup_loader
+def load_user(jwt_header, jwt_payload):
     """
     The callback for reloading a user from the session.
     """
     try:
-        return models.User.query.get(int(identity))
+        return models.User.query.get(int(jwt_payload['sub']))
     except ValueError:
         return None
