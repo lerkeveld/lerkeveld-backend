@@ -19,7 +19,7 @@ material_types_schema = MaterialTypeSchema(many=True)
 @api.resource('/materiaal/')
 class MaterialReservationListResource(Resource):
 
-    @jwt.jwt_required
+    @jwt.jwt_required()
     def get(self):
         yesterday = datetime.date.today() - datetime.timedelta(1)
         reservations = MaterialReservation.get_all_after(yesterday)
@@ -31,7 +31,7 @@ class MaterialReservationListResource(Resource):
         data = reservations_schema.dump(reservations)
         return {'success': True, 'reservations': data}
 
-    @jwt.jwt_required
+    @jwt.jwt_required()
     def post(self):
         json_data = request.get_json()
         try:
@@ -57,7 +57,7 @@ class MaterialReservationListResource(Resource):
 @api.resource('/materiaal/<int:reservation_id>')
 class MaterialReservationResource(Resource):
 
-    @jwt.jwt_required
+    @jwt.jwt_required()
     def delete(self, reservation_id):
         user = jwt.current_user
         reservation = MaterialReservation.query.get(reservation_id)
@@ -72,7 +72,7 @@ class MaterialReservationResource(Resource):
 @api.resource('/materiaal/type')
 class MaterialTypeResource(Resource):
 
-    @jwt.jwt_required
+    @jwt.jwt_required()
     def get(self):
         types = MaterialType.query.all()
         data = material_types_schema.dump(types)

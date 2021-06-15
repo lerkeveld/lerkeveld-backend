@@ -28,7 +28,7 @@ def get_start_date():
 @api.resource('/bread/')
 class BreadOrderDateListResource(Resource):
 
-    @jwt.jwt_required
+    @jwt.jwt_required()
     def get(self):
         user = jwt.current_user
         start_date = get_start_date()
@@ -40,7 +40,7 @@ class BreadOrderDateListResource(Resource):
 @api.resource('/bread/<int:order_date_id>')
 class BreadOrderDateResource(Resource):
 
-    @jwt.jwt_required
+    @jwt.jwt_required()
     def patch(self, order_date_id):
         order_date = BreadOrderDate.query.get(order_date_id)
         if not order_date:
@@ -58,7 +58,7 @@ class BreadOrderDateResource(Resource):
         queries.add_orders_on(user, order_date, data.get('items'))
         return {'success': True}
 
-    @jwt.jwt_required
+    @jwt.jwt_required()
     def delete(self, order_date_id):
         order_date = BreadOrderDate.query.get(order_date_id)
         if not order_date:
@@ -74,7 +74,7 @@ class BreadOrderDateResource(Resource):
 @api.resource('/bread/all')
 class BreadAllOrderDatesResource(Resource):
 
-    @jwt.jwt_required
+    @jwt.jwt_required()
     def patch(self):
         json_data = request.get_json()
         try:
@@ -87,7 +87,7 @@ class BreadAllOrderDatesResource(Resource):
         queries.add_orders_after(user, start_date, data.get('items'))
         return {'success': True}
 
-    @jwt.jwt_required
+    @jwt.jwt_required()
     def delete(self):
         user = jwt.current_user
         start_date = get_start_date()
@@ -98,7 +98,7 @@ class BreadAllOrderDatesResource(Resource):
 @api.resource('/bread/type')
 class BreadTypeResource(Resource):
 
-    @jwt.jwt_required
+    @jwt.jwt_required()
     def get(self):
         types = BreadType.query.all()
         data = bread_types_schema.dump(types)
