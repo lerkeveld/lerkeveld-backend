@@ -43,6 +43,6 @@ def load_user(jwt_header, jwt_payload):
     The callback for reloading a user from the session.
     """
     try:
-        return models.User.query.get(int(jwt_payload['sub']))
+        return models.User.query.get(int(jwt_payload[app.config['JWT_IDENTITY_CLAIM']]))
     except ValueError:
         return None
